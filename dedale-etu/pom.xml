@@ -29,7 +29,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven-compiler.version>3.12.1</maven-compiler.version>
-		<junit.version>4.13.2</junit.version>
+		<junitJupiter.version>5.10.2</junitJupiter.version>
 		<plantuml.version>1.2023.10</plantuml.version>
 		<javafx.version>21.0.2</javafx.version>
 		<gs-core.version>2.0</gs-core.version>
@@ -134,10 +134,12 @@
 		</dependency>
 
 		<!-- Junit -->
+		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
+    		<groupId>org.junit.jupiter</groupId>
+    		<artifactId>junit-jupiter-api</artifactId>
+    		<version>${junitJupiter.version}</version>
+    		<scope>test</scope>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->

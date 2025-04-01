@@ -17,13 +17,20 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.IdAlreadyInUseException;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.ui.fx_viewer.FxViewPanel;
 import org.graphstream.ui.fx_viewer.FxViewer;
+import org.graphstream.ui.javafx.FxGraphRenderer;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.Viewer.CloseFramePolicy;
 
 import dataStructures.serializableGraph.*;
 import dataStructures.tuple.Couple;
+import eu.su.mas.dedale.mas.agent.knowledge.MapRepresentation.MapAttribute;
 import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
 /**
  * This simple topology representation only deals with the graph, not its content.</br>
@@ -52,31 +59,56 @@ public class MapRepresentation implements Serializable {
 	 ********************************/
 
 	private String defaultNodeStyle= "node {"+"fill-color: black;"+" size-mode:fit;text-alignment:under; text-size:14;text-color:white;text-background-mode:rounded-box;text-background-color:black;}";
-	private String nodeStyle_open = "node.agent {"+"fill-color: forestgreen;"+"}";
-	private String nodeStyle_agent = "node.open {"+"fill-color: blue;"+"}";
+	private String nodeStyle_open = "node.open {"+"fill-color: forestgreen;"+"}";
+	private String nodeStyle_agent = "node.agent {"+"fill-color: blue;"+"}";
 	private String nodeStyle=defaultNodeStyle+nodeStyle_agent+nodeStyle_open;
 
 	private Graph g; //data structure non serializable
 	private Viewer viewer; //ref to the display,  non serializable
 	private Integer nbEdges;//used to generate the edges ids
+	private String agentName;//name of the agent the map belongs to
 
 	private SerializableSimpleGraph<String, MapAttribute> sg;//used as a temporary dataStructure during migration
-
-
+	
+	/**
+	 * @deprecated Prefer the use of MapRepresentation(String agentName)
+	 */
+	@Deprecated 
 	public MapRepresentation() {
+
 		//System.setProperty("org.graphstream.ui.renderer","org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 		System.setProperty("org.graphstream.ui", "javafx");
 		this.g= new SingleGraph("My world vision");
 		this.g.setAttribute("ui.stylesheet",nodeStyle);
 
 		Platform.runLater(() -> {
-			openGui();
+			//openGui();
+			openGui4();
 		});
 		//this.viewer = this.g.display();
 
 		this.nbEdges=0;
 	}
 
+
+	/**
+	 * @param agentName Name of the agent this representation belongs too
+	 */
+	public MapRepresentation(String agentName) {
+		//System.setProperty("org.graphstream.ui.renderer","org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+		System.setProperty("org.graphstream.ui", "javafx");
+		this.g= new SingleGraph("My world vision");
+		this.g.setAttribute("ui.stylesheet",nodeStyle);
+		this.agentName=agentName;
+
+		Platform.runLater(() -> {
+			//openGui();
+			openGui4();
+			
+		});
+		this.nbEdges=0;
+	}
+	
 	/**
 	 * Add or replace a node and its attribute 
 	 * @param id unique identifier of the node
@@ -268,6 +300,37 @@ public class MapRepresentation implements Serializable {
 		g.display();
 	}
 
+	/**
+	 * Method called after a migration to reopen default GUI component
+	 */
+	private synchronized void openGui4() {
+
+		Stage primaryStage = new Stage();
+		StackPane newRoot = new StackPane();
+
+		AnchorPane ap= new AnchorPane();
+
+		FxViewer viewer = new FxViewer(g, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+
+		g.setAttribute("ui.antialias");
+		g.setAttribute("ui.quality");
+		viewer.enableAutoLayout();
+		viewer.setCloseFramePolicy(FxViewer.CloseFramePolicy.CLOSE_VIEWER);
+		//viewer.addDefaultView(true);
+
+		//g.display();
+
+		FxViewPanel panel = (FxViewPanel)viewer.addDefaultView(false, new FxGraphRenderer());
+		ap.getChildren().add(panel);
+		newRoot.getChildren().add(ap);
+		primaryStage.setTitle(this.agentName);
+
+		Scene scene = new Scene(newRoot, 800, 800);
+		primaryStage.setScene(scene);
+		primaryStage.show();
+
+	}
+	
 	public void mergeMap(SerializableSimpleGraph<String, MapAttribute> sgreceived) {
 		//System.out.println("You should decide what you want to save and how");
 		//System.out.println("We currently blindy add the topology");

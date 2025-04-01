@@ -50,7 +50,7 @@ public class ExploSoloBehaviour extends SimpleBehaviour {
 	public void action() {
 
 		if(this.myMap==null)
-			this.myMap= new MapRepresentation();
+			this.myMap= new MapRepresentation(this.myAgent.getLocalName());
 		
 		//0) Retrieve the current position
 		Location myPosition=((AbstractDedaleAgent)this.myAgent).getCurrentPosition();

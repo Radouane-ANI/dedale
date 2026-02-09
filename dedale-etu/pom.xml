@@ -29,6 +29,9 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven-compiler.version>3.12.1</maven-compiler.version>
+		<maven-source.version>3.2.1</maven-source.version>
+		<maven-javadoc.version>3.3.0</maven-javadoc.version>
+		<maven-dependency.version>3.2.0</maven-dependency.version>
 		<junitJupiter.version>5.10.2</junitJupiter.version>
 		<plantuml.version>1.2023.10</plantuml.version>
 		<javafx.version>21.0.2</javafx.version>
@@ -88,13 +91,7 @@
 			<artifactId>javafx-controls</artifactId>
 			<version>${javafx.version}</version>
 		</dependency>
-<!--
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-base</artifactId>
-			<version>${javafx.version}</version>
-		</dependency>
- -->
+
 		<!--  Jade -->
 		<dependency>
     		<groupId>com.gitlab.jade-project</groupId>
@@ -185,17 +182,78 @@
 	</dependencies>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler.version}</version>
-				<configuration>
-					<source>21</source>
-					<target>21</target>
-				</configuration>
-			</plugin>
-		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${maven-compiler.version}</version>
+					<configuration>
+						<source>21</source>
+						<target>21</target>
+						<downloadSources>true</downloadSources>
+						<downloadJavadocs>true</downloadJavadocs>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>com.github.jeluard</groupId>
+					<artifactId>plantuml-maven-plugin</artifactId>
+					<version>1.2</version>
+					<configuration>
+						<sourceFiles>
+							<directory>${basedir}</directory>
+							<includes>
+								<include>src/main/plantuml/**/*.txt</include>
+							</includes>
+						</sourceFiles>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>${maven-source.version}</version>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>${maven-javadoc.version}</version>
+					<executions>
+						<execution>
+							<id>attach-javadocs</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>${maven-dependency.version}</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>sources</goal>
+								<goal>resolve</goal>
+							</goals>
+							<configuration>
+								<classifier>javadoc</classifier>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 </project>

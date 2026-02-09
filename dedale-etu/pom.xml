@@ -165,7 +165,7 @@
 		<dependency>
 		    <groupId>com.gitlab.dedale</groupId>
 	    	<artifactId>dedale</artifactId>
-	    	<version>-SNAPSHOT</version>
+	    	<version>master-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -191,8 +191,6 @@
 					<configuration>
 						<source>21</source>
 						<target>21</target>
-						<downloadSources>true</downloadSources>
-						<downloadJavadocs>true</downloadJavadocs>
 					</configuration>
 				</plugin>
 

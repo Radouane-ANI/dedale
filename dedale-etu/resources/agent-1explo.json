@@ -2,12 +2,15 @@
 { 
   "agentType":"agentExplo",
   "agentName": "Elsa",
+  "agentClass":"dummies.explo.ExploreSoloAgent",
+  "agentInitialContainer":"container2",
   "communicationRange": 3,
   "initialLocation": "free",
   "backPackCapacityGold": -1,
   "backPackCapacityDiamond":-1, 
   "detectionRadius": 0,
   "strengthExpertise": 2,
-  "lockPickingExpertise":1
+  "lockPickingExpertise":1,
+  "userParameters": ["param1","param2","param3"]
   }
 ]

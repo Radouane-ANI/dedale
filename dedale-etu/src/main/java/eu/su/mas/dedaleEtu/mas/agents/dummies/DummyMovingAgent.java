@@ -3,6 +3,7 @@ package eu.su.mas.dedaleEtu.mas.agents.dummies;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.su.mas.dedale.env.EntityCharacteristics;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedale.mas.agent.behaviours.platformManagment.*;
 
@@ -37,7 +38,7 @@ public class DummyMovingAgent extends AbstractDedaleAgent{
 
 		//get the parameters given into the object[]
 		final Object[] args = getArguments();
-		System.out.println("Arg given by the user to "+this.getLocalName()+": "+args[2]);
+		System.out.println("Arg given by the user to "+this.getLocalName()+": "+((EntityCharacteristics)args[0]).getUserParameters());
 		
 		//use them as parameters for your behaviours is you want
 		

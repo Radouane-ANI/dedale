@@ -3,6 +3,8 @@ package eu.su.mas.dedaleEtu.mas.behaviours;
 import java.util.Iterator;
 import java.util.List;
 
+import org.netlib.util.booleanW;
+
 import dataStructures.serializableGraph.SerializableSimpleGraph;
 import dataStructures.tuple.Couple;
 import eu.su.mas.dedale.env.Location;
@@ -13,7 +15,6 @@ import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation.MapAttribute;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation;
-import eu.su.mas.dedaleEtu.mas.behaviours.ShareMapBehaviour;
 
 import jade.core.behaviours.SimpleBehaviour;
 import jade.lang.acl.ACLMessage;
@@ -46,6 +47,11 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
 	 */
 	private MapRepresentation myMap;
 
+	private java.util.HashMap<String, SerializableSimpleGraph<String, MapAttribute>> pendingDeltas = new java.util.HashMap<>();
+	private java.util.HashMap<String, Long> lastShareTopo = new java.util.HashMap<>();
+
+	private String lastPosition = "";
+
 	private List<String> list_agentNames;
 
 	/**
@@ -61,18 +67,61 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
 
 	}
 
+	private void sendMapDelta(String receiverName, jade.core.AID receiverAID) {
+		long currentTime = System.currentTimeMillis();
+		// Avoid sending the same map delta multiple times within a short window (1
+		// second)
+		// This prevents redundant sends if A and B ping each other simultaneously
+		if (currentTime - lastShareTopo.getOrDefault(receiverName, 0L) < 1000) {
+			return;
+		}
+
+		SerializableSimpleGraph<String, MapAttribute> sgToSend = this.myMap.getMapDelta(receiverName);
+		if (sgToSend != null) {
+			lastShareTopo.put(receiverName, currentTime);
+			String convId = java.util.UUID.randomUUID().toString();
+			pendingDeltas.put(convId, sgToSend);
+
+			ACLMessage shareMsg = new ACLMessage(ACLMessage.INFORM);
+			shareMsg.setProtocol("SHARE-TOPO");
+			shareMsg.setSender(this.myAgent.getAID());
+			shareMsg.addReceiver(receiverAID);
+			shareMsg.setConversationId(convId);
+			try {
+				shareMsg.setContentObject(sgToSend);
+				((AbstractDedaleAgent) this.myAgent).sendMessage(shareMsg);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	@Override
 	public void action() {
 
 		if (this.myMap == null) {
 			this.myMap = new MapRepresentation(this.myAgent.getLocalName());
-			this.myAgent.addBehaviour(new ShareMapBehaviour(this.myAgent, 500, this.myMap, list_agentNames));
 		}
 
 		// 0) Retrieve the current position
 		Location myPosition = ((AbstractDedaleAgent) this.myAgent).getCurrentPosition();
 
 		if (myPosition != null) {
+			// Broadcast MAP only if we moved to a new node and map is not fully explored
+			if (!myPosition.getLocationId().equals(lastPosition)) {
+				lastPosition = myPosition.getLocationId();
+
+				if (this.myMap.hasOpenNode()) {
+					for (String agentName : list_agentNames) {
+						ACLMessage mapMsg = new ACLMessage(ACLMessage.INFORM);
+						mapMsg.setProtocol("MAP");
+						mapMsg.setSender(this.myAgent.getAID());
+						mapMsg.addReceiver(new jade.core.AID(agentName, jade.core.AID.ISLOCALNAME));
+						((AbstractDedaleAgent) this.myAgent).sendMessage(mapMsg);
+					}
+				}
+			}
+
 			// List of observable from the agent's current position
 			List<Couple<Location, List<Couple<Observation, String>>>> lobs = ((AbstractDedaleAgent) this.myAgent)
 					.observe();// myPosition
@@ -104,7 +153,6 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
 						nextNodeId = accessibleNode.getLocationId();
 				}
 			}
-
 			// 3) while openNodes is not empty, continues.
 			if (!this.myMap.hasOpenNode()) {
 				// Explo finished
@@ -112,37 +160,96 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
 				System.out
 						.println(this.myAgent.getLocalName() + " - Exploration successufully done, behaviour removed.");
 			} else {
-				// 4) select next move.
-				// 4.1 If there exist one open node directly reachable, go for it,
+				// 4) At each time step, the agent check if he received a graph from a teammate.
+				// If it was written properly, this sharing action should be in a dedicated
+				// behaviour set.
+
+				MessageTemplate msgTemplate = MessageTemplate.and(
+						MessageTemplate.MatchPerformative(ACLMessage.INFORM),
+						MessageTemplate.or(
+								MessageTemplate.MatchProtocol("SHARE-TOPO"),
+								MessageTemplate.or(
+										MessageTemplate.MatchProtocol("MAP"),
+										MessageTemplate.or(
+												MessageTemplate.MatchProtocol("SYNC-REQ"),
+												MessageTemplate.MatchProtocol("ACK")))));
+				ACLMessage msgReceived = this.myAgent.receive(msgTemplate);
+				while (msgReceived != null) {
+					String protocol = msgReceived.getProtocol();
+					String senderName = msgReceived.getSender().getLocalName();
+
+					if ("MAP".equals(protocol)) {
+						// If they sent us a MAP, they might have something new for us, so we request it
+						ACLMessage replyMsg = new ACLMessage(ACLMessage.INFORM);
+						replyMsg.setProtocol("SYNC-REQ");
+						replyMsg.setSender(this.myAgent.getAID());
+						replyMsg.addReceiver(msgReceived.getSender());
+						((AbstractDedaleAgent) this.myAgent).sendMessage(replyMsg);
+
+						// In addition to requesting their map, if we have something to send,
+						// proactively send ours!
+						SerializableSimpleGraph<String, MapAttribute> sgToSend = this.myMap.getMapDelta(senderName);
+						if (sgToSend != null) {
+							sendMapDelta(senderName, msgReceived.getSender());
+						}
+
+					} else if ("SYNC-REQ".equals(protocol)) {
+						SerializableSimpleGraph<String, MapAttribute> sgToSend = this.myMap.getMapDelta(senderName);
+						if (sgToSend != null) {
+							sendMapDelta(senderName, msgReceived.getSender());
+						}
+
+					} else if ("SHARE-TOPO".equals(protocol)) {
+						try {
+							SerializableSimpleGraph<String, MapAttribute> sgreceived = (SerializableSimpleGraph<String, MapAttribute>) msgReceived
+									.getContentObject();
+							this.myMap.mergeMap(sgreceived, senderName);
+
+							ACLMessage ackMsg = new ACLMessage(ACLMessage.INFORM);
+							ackMsg.setProtocol("ACK");
+							ackMsg.setSender(this.myAgent.getAID());
+							ackMsg.addReceiver(msgReceived.getSender());
+							ackMsg.setInReplyTo(msgReceived.getConversationId());
+							((AbstractDedaleAgent) this.myAgent).sendMessage(ackMsg);
+						} catch (UnreadableException e) {
+							e.printStackTrace();
+						}
+
+					} else if ("ACK".equals(protocol)) {
+						String convId = msgReceived.getInReplyTo();
+						if (convId != null) {
+							SerializableSimpleGraph<String, MapAttribute> confirmedDelta = pendingDeltas.remove(convId);
+							if (confirmedDelta != null) {
+								this.myMap.markAsKnown(senderName, confirmedDelta);
+							}
+						}
+					}
+					msgReceived = this.myAgent.receive(msgTemplate);
+				}
+
+				// 5) select next move.
+				// 5.1 If there exist one open node directly reachable, go for it,
 				// otherwise choose one from the openNode list, compute the shortestPath and go
 				// for it
 				if (nextNodeId == null) {
 					// no directly accessible openNode
 					// chose one, compute the path and take the first step.
 					nextNodeId = this.myMap.getShortestPathToClosestOpenNode(myPosition.getLocationId()).get(0);// getShortestPath(myPosition,this.openNodes.get(0)).get(0);
+					if (contientAgents(nextNodeId)) {
+						for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
+							String accessibleNodeId = obs.getLeft().getLocationId();
+							if (!accessibleNodeId.equals(myPosition.getLocationId())
+									&& !contientAgents(accessibleNodeId)) {
+								nextNodeId = accessibleNodeId;
+								break;
+							}
+						}
+					}
 					// System.out.println(this.myAgent.getLocalName()+"-- list=
 					// "+this.myMap.getOpenNodes()+"| nextNode: "+nextNode);
 				} else {
 					// System.out.println("nextNode notNUll - "+this.myAgent.getLocalName()+"--
 					// list= "+this.myMap.getOpenNodes()+"\n -- nextNode: "+nextNode);
-				}
-
-				// 5) At each time step, the agent check if he received a graph from a teammate.
-				// If it was written properly, this sharing action should be in a dedicated
-				// behaviour set.
-				MessageTemplate msgTemplate = MessageTemplate.and(
-						MessageTemplate.MatchProtocol("SHARE-TOPO"),
-						MessageTemplate.MatchPerformative(ACLMessage.INFORM));
-				ACLMessage msgReceived = this.myAgent.receive(msgTemplate);
-				if (msgReceived != null) {
-					SerializableSimpleGraph<String, MapAttribute> sgreceived = null;
-					try {
-						sgreceived = (SerializableSimpleGraph<String, MapAttribute>) msgReceived.getContentObject();
-						this.myMap.mergeMap(sgreceived, msgReceived.getSender().getLocalName());
-					} catch (UnreadableException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
 				}
 
 				((AbstractDedaleAgent) this.myAgent).moveTo(new GsLocation(nextNodeId));
@@ -156,4 +263,19 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
 		return finished;
 	}
 
+	private boolean contientAgents(String nodeID) {
+		List<Couple<Location, List<Couple<Observation, String>>>> lobs = ((AbstractDedaleAgent) this.myAgent)
+				.observe();// myPosition
+
+		for (Couple<Location, List<Couple<Observation, String>>> points : lobs) {
+			if (points.getLeft().getLocationId().equals(nodeID)) {
+				for (Couple<Observation, String> obs : points.getRight()) {
+					if (obs.getLeft() == Observation.AGENTNAME) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
 }

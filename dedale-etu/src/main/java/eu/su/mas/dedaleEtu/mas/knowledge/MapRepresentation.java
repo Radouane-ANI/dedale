@@ -294,7 +294,6 @@ public class MapRepresentation implements Serializable {
 			Node n = iter.next();
 			if (!knownNodes.contains(n.getId())) {
 				deltaSg.addNode(n.getId(), MapAttribute.valueOf((String) n.getAttribute("ui.class")));
-				knownNodes.add(n.getId());
 				hasDelta = true;
 			}
 		}
@@ -317,7 +316,6 @@ public class MapRepresentation implements Serializable {
 					deltaSg.addNode(tn.getId(), MapAttribute.valueOf((String) tn.getAttribute("ui.class")));
 				}
 				deltaSg.addEdge(e.getId(), sn.getId(), tn.getId());
-				knownEdges.add(edgeId);
 				hasDelta = true;
 			}
 		}
@@ -327,6 +325,25 @@ public class MapRepresentation implements Serializable {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Mark the given nodes and edges as successfully received by the target agent.
+	 */
+	public synchronized void markAsKnown(String receiverName,
+			SerializableSimpleGraph<String, MapAttribute> sgreceived) {
+		Set<String> knownNodes = knownNodesByAgent.computeIfAbsent(receiverName, k -> new HashSet<>());
+		Set<String> knownEdges = knownEdgesByAgent.computeIfAbsent(receiverName, k -> new HashSet<>());
+
+		for (SerializableNode<String, MapAttribute> n : sgreceived.getAllNodes()) {
+			knownNodes.add(n.getNodeId());
+		}
+
+		for (SerializableNode<String, MapAttribute> n : sgreceived.getAllNodes()) {
+			for (String s : sgreceived.getEdges(n.getNodeId())) {
+				knownEdges.add(getStandardizedEdgeId(n.getNodeId(), s));
+			}
+		}
 	}
 
 	/**

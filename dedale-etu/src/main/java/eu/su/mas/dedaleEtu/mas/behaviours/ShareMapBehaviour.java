@@ -1,13 +1,9 @@
 package eu.su.mas.dedaleEtu.mas.behaviours;
 
-import java.io.IOException;
 import java.util.List;
-
-import dataStructures.serializableGraph.SerializableSimpleGraph;
 
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation;
-import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation.MapAttribute;
 
 import jade.core.AID;
 import jade.core.Agent;
@@ -24,6 +20,7 @@ import jade.lang.acl.ACLMessage;
  *
  */
 public class ShareMapBehaviour extends TickerBehaviour {
+
 
 	private MapRepresentation myMap;
 	private List<String> receivers;
@@ -52,30 +49,19 @@ public class ShareMapBehaviour extends TickerBehaviour {
 
 	@Override
 	protected void onTick() {
-		// 4) At each time step, the agent checks if it has new knowledge to share with
-		// each receiver.
-		// It only sends a subgraph (delta) containing nodes/edges the receiver doesn't
-		// know about.
+		if (this.myMap != null && !this.myMap.hasOpenNode()) {
+			return; // The map is entirely known, we stop broadcasting MAP.
+		}
 
+		// We only send a MAP message to check if the receiver is in communication range.
+		// If they are, they will reply with a SYNC-REQ, and we will reply to them.
+		// This prevents dropping map deltas into the void when out of range.
 		for (String agentName : receivers) {
-			SerializableSimpleGraph<String, MapAttribute> sg = this.myMap.getMapDelta(agentName);
-
-			if (sg != null) {
-				// We have a delta to send
-				System.out.println(this.myAgent.getLocalName() + " sending map delta (" + sg.getAllNodes().size()
-						+ " nodes) to " + agentName);
-				ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-				msg.setProtocol("SHARE-TOPO");
-				msg.setSender(this.myAgent.getAID());
-				msg.addReceiver(new AID(agentName, AID.ISLOCALNAME));
-
-				try {
-					msg.setContentObject(sg);
-					((AbstractDedaleAgent) this.myAgent).sendMessage(msg);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+			msg.setProtocol("MAP");
+			msg.setSender(this.myAgent.getAID());
+			msg.addReceiver(new AID(agentName, AID.ISLOCALNAME));
+			((AbstractDedaleAgent) this.myAgent).sendMessage(msg);
 		}
 	}
 

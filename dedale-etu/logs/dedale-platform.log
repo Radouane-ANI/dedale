@@ -1,0 +1,726 @@
+2026-03-17 11:44:39.435 [Elsa] INFO  c.s.m.d.m.a.d.DummyMovingAgent0 - setup() - EntityCharacteristics: 
+ AgentName: Elsa
+ 	 Instance of null
+ 	 Initial container: Ithaq_null
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 3
+ 	 detection radius: 0
+ 	 Expertise: [<LockPicking, 1>, <Strength, 2>]
+ 	 UserParameters: null
+2026-03-17 11:44:39.494 [Elsa] DEBUG c.s.m.d.m.a.d.DummyMovingAgent0 - Agent Elsa is started
+
+2026-03-17 11:44:44.025 [Elsa] INFO  c.s.m.d.m.a.d.DummyMovingAgent0 - StartMyBehaviours - I'm NOT on the right container, waiting to be on it to explore
+2026-03-17 11:44:44.385 [Elsa] INFO  c.s.m.d.m.a.d.DummyMovingAgent0 - I'm arrived on the right container, I can now explore the environment
+2026-03-17 11:44:44.996 [Elsa] DEBUG c.s.m.d.m.a.d.DummyMovingAgent0 - Current location: 40
+2026-03-17 11:44:44.997 [Elsa] DEBUG c.s.m.d.m.a.d.DummyMovingAgent0 - Current location: 40
+2026-03-17 11:44:45.037 [Elsa] DEBUG c.s.m.d.m.a.d.DummyMovingAgent0 - Observations: [<40, []>, <39, []>, <41, []>, <23, []>, <24, []>, <25, []>]
+2026-03-17 11:46:03.516 [Elsa] INFO  c.s.m.d.m.a.d.DummyMovingAgent0 - setup() - EntityCharacteristics: 
+ AgentName: Explo1
+ 	 Instance of null
+ 	 Initial container: Ithaq_null
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 3
+ 	 detection radius: 0
+ 	 Expertise: [<Strength, 1>, <LockPicking, 1>]
+ 	 UserParameters: null
+2026-03-17 11:46:03.630 [Elsa] DEBUG c.s.m.d.m.a.d.DummyMovingAgent0 - Agent Elsa is started
+
+2026-03-17 11:46:06.596 [Elsa] INFO  c.s.m.d.m.a.d.DummyMovingAgent0 - StartMyBehaviours - I'm NOT on the right container, waiting to be on it to explore
+2026-03-17 11:46:06.879 [Elsa] INFO  c.s.m.d.m.a.d.DummyMovingAgent0 - I'm arrived on the right container, I can now explore the environment
+2026-03-17 11:46:07.482 [Elsa] DEBUG c.s.m.d.m.a.d.DummyMovingAgent0 - Current location: 17
+2026-03-17 11:46:07.483 [Elsa] DEBUG c.s.m.d.m.a.d.DummyMovingAgent0 - Current location: 17
+2026-03-17 11:46:07.491 [Elsa] DEBUG c.s.m.d.m.a.d.DummyMovingAgent0 - Observations: [<17, []>, <16, []>, <18, []>, <4, []>, <5, []>, <32, []>, <33, []>, <34, []>]
+2026-03-17 11:55:44.493 [Explo1] INFO  c.s.m.d.m.a.d.e.ExploreCoopAgent1 - setup() - EntityCharacteristics: 
+ AgentName: Explo1
+ 	 Instance of null
+ 	 Initial container: Ithaq_null
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 3
+ 	 detection radius: 0
+ 	 Expertise: [<Strength, 1>, <LockPicking, 1>]
+ 	 UserParameters: null
+2026-03-17 11:55:44.494 [Explo2] INFO  c.s.m.d.m.a.d.e.ExploreCoopAgent2 - setup() - EntityCharacteristics: 
+ AgentName: Explo2
+ 	 Instance of null
+ 	 Initial container: Ithaq_null
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 4
+ 	 detection radius: 0
+ 	 Expertise: [<Strength, 1>, <LockPicking, 1>]
+ 	 UserParameters: null
+2026-03-17 11:55:44.475 [ImHere] INFO  c.s.m.d.m.a.d.c.ControlledAgent0 - setup() - EntityCharacteristics: 
+ AgentName: ImHere
+ 	 Instance of null
+ 	 Initial container: Ithaq_null
+ 	 Initial location: null
+ 	 Entitytype: HumanControlled
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 3
+ 	 detection radius: 1
+ 	 Expertise: [<Strength, 1>, <LockPicking, 1>]
+ 	 UserParameters: null
+2026-03-17 11:55:44.548 [ImHere] DEBUG c.s.m.d.m.a.d.c.ControlledAgent0 - Agent ImHere is started
+
+2026-03-17 11:55:44.549 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Agent Explo2 is started
+
+2026-03-17 11:55:44.547 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Agent Explo1 is started
+
+2026-03-17 11:55:48.830 [Explo1] INFO  c.s.m.d.m.a.d.e.ExploreCoopAgent1 - StartMyBehaviours - I'm NOT on the right container, waiting to be on it to explore
+2026-03-17 11:55:48.832 [Explo2] INFO  c.s.m.d.m.a.d.e.ExploreCoopAgent2 - StartMyBehaviours - I'm NOT on the right container, waiting to be on it to explore
+2026-03-17 11:55:48.837 [ImHere] INFO  c.s.m.d.m.a.d.c.ControlledAgent0 - StartMyBehaviours - I'm NOT on the right container, waiting to be on it to explore
+2026-03-17 11:55:49.221 [Explo2] INFO  c.s.m.d.m.a.d.e.ExploreCoopAgent2 - I'm arrived on the right container, I can now explore the environment
+2026-03-17 11:55:49.247 [Explo1] INFO  c.s.m.d.m.a.d.e.ExploreCoopAgent1 - I'm arrived on the right container, I can now explore the environment
+2026-03-17 11:55:49.248 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 23
+2026-03-17 11:55:49.249 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 23
+2026-03-17 11:55:49.250 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<23, []>, <22, [<AgentName, Explo1>, <Stench, >]>, <24, []>, <7, []>, <8, []>, <38, [<Stench, >]>, <39, []>, <40, []>]
+2026-03-17 11:55:49.251 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 22
+2026-03-17 11:55:49.252 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 22
+2026-03-17 11:55:49.252 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<22, [<Stench, >]>, <21, [<Stench, >]>, <23, [<AgentName, Explo2>]>, <7, []>, <37, [<Stench, >]>, <38, [<Stench, >]>, <39, []>]
+2026-03-17 11:55:49.258 [ImHere] INFO  c.s.m.d.m.a.d.c.ControlledAgent0 - I'm arrived on the right container, I can now explore the environment
+2026-03-17 11:55:50.253 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 22
+2026-03-17 11:55:50.255 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<22, [<Stench, >]>, <21, [<Stench, >]>, <23, [<AgentName, Explo2>]>, <7, []>, <37, [<Stench, >]>, <38, [<Stench, >]>, <39, []>]
+2026-03-17 11:55:50.258 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 21 - Sucess
+2026-03-17 11:55:50.260 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 21
+2026-03-17 11:55:50.298 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 21
+2026-03-17 11:55:50.301 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<21, [<Stench, >]>, <20, [<Stench, >]>, <22, [<Stench, >]>, <6, []>, <7, []>, <36, [<Stench, >]>, <37, [<Stench, >]>, <38, [<Stench, >]>]
+2026-03-17 11:55:50.725 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 23
+2026-03-17 11:55:50.743 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<23, []>, <22, [<Stench, >]>, <24, []>, <7, []>, <8, []>, <38, [<Stench, >]>, <39, []>, <40, []>]
+2026-03-17 11:55:50.744 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 22 - Sucess
+2026-03-17 11:55:50.745 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 22
+2026-03-17 11:55:50.748 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 22
+2026-03-17 11:55:50.749 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<22, [<Stench, >]>, <21, [<AgentName, Explo1>, <Stench, >]>, <23, []>, <7, []>, <37, [<Stench, >]>, <38, [<Stench, >]>, <39, []>]
+2026-03-17 11:55:50.777 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 21
+2026-03-17 11:55:50.787 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 22
+2026-03-17 11:55:50.787 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<21, [<Stench, >]>, <20, [<Stench, >]>, <22, [<AgentName, Explo2>, <Stench, >]>, <6, []>, <7, []>, <36, [<Stench, >]>, <37, [<Stench, >]>, <38, [<Stench, >]>]
+2026-03-17 11:55:50.787 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<22, [<Stench, >]>, <21, [<AgentName, Explo1>, <Stench, >]>, <23, []>, <7, []>, <37, [<Stench, >]>, <38, [<Stench, >]>, <39, []>]
+2026-03-17 11:55:50.787 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 20 - Sucess
+2026-03-17 11:55:50.787 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 22
+2026-03-17 11:55:50.788 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<22, [<Stench, >]>, <21, [<Stench, >]>, <23, []>, <7, []>, <37, [<Stench, >]>, <38, [<Stench, >]>, <39, []>]
+2026-03-17 11:55:50.788 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 20
+2026-03-17 11:55:50.788 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 21 - Sucess
+2026-03-17 11:55:50.796 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 21
+2026-03-17 11:55:50.800 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 21
+2026-03-17 11:55:50.800 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<21, [<Stench, >]>, <20, [<AgentName, Explo1>, <Stench, >]>, <22, [<Stench, >]>, <6, []>, <7, []>, <36, [<Stench, >]>, <37, [<Stench, >]>, <38, [<Stench, >]>]
+2026-03-17 11:55:50.796 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 20
+2026-03-17 11:55:50.805 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<20, [<Stench, >]>, <19, []>, <21, [<AgentName, Explo2>, <Stench, >]>, <6, []>, <35, []>, <36, [<Stench, >]>, <37, [<Stench, >]>]
+2026-03-17 11:55:51.840 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 20
+2026-03-17 11:55:51.841 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<20, [<Stench, >]>, <19, []>, <21, [<AgentName, Explo2>, <Stench, >]>, <6, []>, <35, []>, <36, [<Stench, >]>, <37, [<Stench, >]>]
+2026-03-17 11:55:51.850 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 19 - Sucess
+2026-03-17 11:55:51.851 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 19
+2026-03-17 11:55:51.854 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 19
+2026-03-17 11:55:51.855 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<19, []>, <18, []>, <20, [<Stench, >]>, <5, []>, <6, []>, <34, []>, <35, []>, <36, [<Stench, >]>]
+2026-03-17 11:55:51.842 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 21
+2026-03-17 11:55:51.856 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<21, [<Stench, >]>, <20, [<Stench, >]>, <22, [<Stench, >]>, <6, []>, <7, []>, <36, [<Stench, >]>, <37, [<Stench, >]>, <38, [<Stench, >]>]
+2026-03-17 11:55:51.856 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 7 - Sucess
+2026-03-17 11:55:51.857 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 7
+2026-03-17 11:55:51.858 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 7
+2026-03-17 11:55:51.858 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<7, []>, <1, []>, <6, []>, <8, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:55:51.865 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 19
+2026-03-17 11:55:51.870 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<19, []>, <18, []>, <20, [<Stench, >]>, <5, []>, <6, []>, <34, []>, <35, []>, <36, [<Stench, >]>]
+2026-03-17 11:55:51.870 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 18 - Sucess
+2026-03-17 11:55:51.874 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 18
+2026-03-17 11:55:51.876 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 18
+2026-03-17 11:55:51.876 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<18, []>, <17, []>, <19, []>, <5, []>, <33, []>, <34, []>, <35, []>]
+2026-03-17 11:55:51.905 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 18
+2026-03-17 11:55:51.913 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 7
+2026-03-17 11:55:51.922 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<7, []>, <1, []>, <6, []>, <8, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:55:51.923 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 1 - Sucess
+2026-03-17 11:55:51.923 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<18, []>, <17, []>, <19, []>, <5, []>, <33, []>, <34, []>, <35, []>]
+2026-03-17 11:55:51.924 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 17 - Sucess
+2026-03-17 11:55:51.924 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 1
+2026-03-17 11:55:51.930 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 17
+2026-03-17 11:55:51.932 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 17
+2026-03-17 11:55:51.932 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<17, []>, <16, []>, <18, []>, <4, []>, <5, []>, <32, []>, <33, []>, <34, []>]
+2026-03-17 11:55:51.934 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 1
+2026-03-17 11:55:51.935 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<1, []>, <2, []>, <3, []>, <4, []>, <5, []>, <6, []>, <7, []>, <8, []>, <9, []>]
+2026-03-17 11:55:52.967 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 1
+2026-03-17 11:55:52.969 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<1, []>, <2, []>, <3, []>, <4, []>, <5, []>, <6, []>, <7, []>, <8, []>, <9, []>]
+2026-03-17 11:55:52.970 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 2 - Sucess
+2026-03-17 11:55:52.972 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 17
+2026-03-17 11:55:52.972 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<17, []>, <16, []>, <18, []>, <4, []>, <5, []>, <32, []>, <33, []>, <34, []>]
+2026-03-17 11:55:52.973 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 16 - Sucess
+2026-03-17 11:55:52.972 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 2
+2026-03-17 11:55:52.990 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 16
+2026-03-17 11:55:53.003 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 2
+2026-03-17 11:55:53.004 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<2, []>, <1, []>, <3, []>, <9, []>, <11, []>, <12, []>, <13, []>]
+2026-03-17 11:55:53.005 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 16
+2026-03-17 11:55:53.010 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<16, []>, <15, []>, <17, []>, <4, []>, <31, []>, <32, []>, <33, []>]
+2026-03-17 11:55:53.036 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 16
+2026-03-17 11:55:53.040 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<16, []>, <15, []>, <17, []>, <4, []>, <31, []>, <32, []>, <33, []>]
+2026-03-17 11:55:53.040 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 15 - Sucess
+2026-03-17 11:55:53.044 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 15
+2026-03-17 11:55:53.047 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 15
+2026-03-17 11:55:53.048 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<15, []>, <14, []>, <16, []>, <3, []>, <4, []>, <30, []>, <31, []>, <32, []>]
+2026-03-17 11:55:53.052 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 2
+2026-03-17 11:55:53.053 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<2, []>, <1, []>, <3, []>, <9, []>, <11, []>, <12, []>, <13, []>]
+2026-03-17 11:55:53.053 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 11 - Sucess
+2026-03-17 11:55:53.054 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 15
+2026-03-17 11:55:53.070 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 11
+2026-03-17 11:55:53.070 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<15, []>, <14, []>, <16, []>, <3, []>, <4, []>, <30, []>, <31, []>, <32, []>]
+2026-03-17 11:55:53.075 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 14 - Sucess
+2026-03-17 11:55:53.078 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 14
+2026-03-17 11:55:53.079 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 14
+2026-03-17 11:55:53.080 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<14, []>, <13, []>, <15, []>, <3, []>, <29, []>, <30, []>, <31, []>]
+2026-03-17 11:55:53.075 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 11
+2026-03-17 11:55:53.098 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<11, []>, <10, []>, <12, []>, <9, []>, <2, []>, <26, []>, <27, []>, <28, []>]
+2026-03-17 11:55:54.085 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 14
+2026-03-17 11:55:54.108 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<14, []>, <13, []>, <15, []>, <3, []>, <29, []>, <30, []>, <31, []>]
+2026-03-17 11:55:54.111 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 13 - Sucess
+2026-03-17 11:55:54.114 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 11
+2026-03-17 11:55:54.115 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<11, []>, <10, []>, <12, []>, <9, []>, <2, []>, <26, []>, <27, []>, <28, []>]
+2026-03-17 11:55:54.116 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 10 - Sucess
+2026-03-17 11:55:54.129 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 13
+2026-03-17 11:55:54.132 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 13
+2026-03-17 11:55:54.133 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<13, []>, <12, []>, <14, []>, <2, []>, <3, []>, <28, []>, <29, []>, <30, []>]
+2026-03-17 11:55:54.135 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 10
+2026-03-17 11:55:54.138 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 10
+2026-03-17 11:55:54.163 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 13
+2026-03-17 11:55:54.172 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<10, []>, <9, []>, <11, []>, <25, []>, <26, []>, <27, []>, <41, []>]
+2026-03-17 11:55:54.173 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<13, []>, <12, []>, <14, []>, <2, []>, <3, []>, <28, []>, <29, []>, <30, []>]
+2026-03-17 11:55:54.174 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 12 - Sucess
+2026-03-17 11:55:54.175 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 12
+2026-03-17 11:55:54.186 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 12
+2026-03-17 11:55:54.187 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<12, []>, <11, []>, <13, []>, <2, []>, <27, []>, <28, []>, <29, []>]
+2026-03-17 11:55:54.194 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 10
+2026-03-17 11:55:54.198 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<10, []>, <9, []>, <11, []>, <25, []>, <26, []>, <27, []>, <41, []>]
+2026-03-17 11:55:54.208 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 25 - Sucess
+2026-03-17 11:55:54.225 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 25
+2026-03-17 11:55:54.234 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 25
+2026-03-17 11:55:54.235 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<25, []>, <24, []>, <10, []>, <8, []>, <9, []>, <26, []>, <40, []>, <41, []>]
+2026-03-17 11:55:54.284 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 12
+2026-03-17 11:55:54.286 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<12, []>, <11, []>, <13, []>, <2, []>, <27, []>, <28, []>, <29, []>]
+2026-03-17 11:55:54.286 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 29 - Sucess
+2026-03-17 11:55:54.293 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 29
+2026-03-17 11:55:54.295 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 29
+2026-03-17 11:55:54.296 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<29, []>, <28, []>, <30, []>, <12, []>, <13, []>, <14, []>]
+2026-03-17 11:55:55.277 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 25
+2026-03-17 11:55:55.282 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<25, []>, <24, []>, <10, []>, <8, []>, <9, []>, <26, []>, <40, []>, <41, []>]
+2026-03-17 11:55:55.285 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 24 - Sucess
+2026-03-17 11:55:55.288 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 24
+2026-03-17 11:55:55.324 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 24
+2026-03-17 11:55:55.347 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<24, []>, <23, []>, <25, []>, <8, []>, <39, []>, <40, []>, <41, []>]
+2026-03-17 11:55:55.367 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 29
+2026-03-17 11:55:55.375 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<29, []>, <28, []>, <30, []>, <12, []>, <13, []>, <14, []>]
+2026-03-17 11:55:55.378 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 30 - Sucess
+2026-03-17 11:55:55.380 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 30
+2026-03-17 11:55:55.385 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 30
+2026-03-17 11:55:55.386 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<30, []>, <29, []>, <31, []>, <13, []>, <14, []>, <15, []>]
+2026-03-17 11:55:56.424 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 30
+2026-03-17 11:55:56.428 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 24
+2026-03-17 11:55:56.430 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<24, []>, <23, []>, <25, []>, <8, []>, <39, []>, <40, []>, <41, []>]
+2026-03-17 11:55:56.431 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 8 - Sucess
+2026-03-17 11:55:56.434 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 8
+2026-03-17 11:55:56.441 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 8
+2026-03-17 11:55:56.442 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<8, []>, <1, []>, <7, []>, <9, []>, <23, []>, <24, []>, <25, []>]
+2026-03-17 11:55:56.435 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<30, []>, <29, []>, <31, []>, <13, []>, <14, []>, <15, []>]
+2026-03-17 11:55:56.448 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 31 - Sucess
+2026-03-17 11:55:56.449 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 31
+2026-03-17 11:55:56.455 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 31
+2026-03-17 11:55:56.457 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<31, []>, <30, []>, <32, []>, <14, []>, <15, []>, <16, []>]
+2026-03-17 11:55:57.479 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 8
+2026-03-17 11:55:57.488 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 31
+2026-03-17 11:55:57.488 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<31, []>, <30, []>, <32, []>, <14, []>, <15, []>, <16, []>]
+2026-03-17 11:55:57.489 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 32 - Sucess
+2026-03-17 11:55:57.489 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 32
+2026-03-17 11:55:57.483 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<8, []>, <1, []>, <7, []>, <9, []>, <23, []>, <24, []>, <25, []>]
+2026-03-17 11:55:57.490 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 32
+2026-03-17 11:55:57.490 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<32, []>, <31, []>, <33, []>, <15, []>, <16, []>, <17, []>]
+2026-03-17 11:55:57.490 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 9 - Sucess
+2026-03-17 11:55:57.498 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 9
+2026-03-17 11:55:57.499 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 9
+2026-03-17 11:55:57.500 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<9, []>, <1, []>, <2, []>, <8, []>, <10, []>, <11, []>, <25, []>]
+2026-03-17 11:55:57.520 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 32
+2026-03-17 11:55:57.521 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<32, []>, <31, []>, <33, []>, <15, []>, <16, []>, <17, []>]
+2026-03-17 11:55:57.522 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 33 - Sucess
+2026-03-17 11:55:57.523 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 33
+2026-03-17 11:55:57.524 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 33
+2026-03-17 11:55:57.524 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<33, []>, <32, []>, <34, []>, <16, []>, <17, []>, <18, []>]
+2026-03-17 11:55:58.507 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 9
+2026-03-17 11:55:58.509 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<9, []>, <1, []>, <2, []>, <8, []>, <10, []>, <11, []>, <25, []>]
+2026-03-17 11:55:58.510 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 25 - Sucess
+2026-03-17 11:55:58.511 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 25
+2026-03-17 11:55:58.512 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 25
+2026-03-17 11:55:58.513 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<25, []>, <24, []>, <10, []>, <8, []>, <9, []>, <26, []>, <40, []>, <41, []>]
+2026-03-17 11:55:58.531 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 33
+2026-03-17 11:55:58.535 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<33, []>, <32, []>, <34, []>, <16, []>, <17, []>, <18, []>]
+2026-03-17 11:55:58.536 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 34 - Sucess
+2026-03-17 11:55:58.539 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 34
+2026-03-17 11:55:58.540 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 34
+2026-03-17 11:55:58.541 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<34, []>, <33, []>, <35, []>, <17, []>, <18, []>, <19, []>]
+2026-03-17 11:55:59.519 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 25
+2026-03-17 11:55:59.519 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<25, []>, <24, []>, <10, []>, <8, []>, <9, []>, <26, []>, <40, []>, <41, []>]
+2026-03-17 11:55:59.520 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 40 - Sucess
+2026-03-17 11:55:59.520 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 40
+2026-03-17 11:55:59.521 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 40
+2026-03-17 11:55:59.521 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<40, []>, <39, []>, <41, []>, <23, []>, <24, []>, <25, []>]
+2026-03-17 11:55:59.545 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 34
+2026-03-17 11:55:59.546 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<34, []>, <33, []>, <35, []>, <17, []>, <18, []>, <19, []>]
+2026-03-17 11:55:59.547 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 35 - Sucess
+2026-03-17 11:55:59.547 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 35
+2026-03-17 11:55:59.547 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 35
+2026-03-17 11:55:59.548 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<35, []>, <34, []>, <36, [<Stench, >]>, <18, []>, <19, []>, <20, [<Stench, >]>]
+2026-03-17 11:56:00.526 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 40
+2026-03-17 11:56:00.527 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<40, []>, <39, []>, <41, []>, <23, []>, <24, []>, <25, []>]
+2026-03-17 11:56:00.528 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 39 - Sucess
+2026-03-17 11:56:00.530 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 39
+2026-03-17 11:56:00.532 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 39
+2026-03-17 11:56:00.533 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<39, []>, <38, [<Stench, >]>, <40, []>, <22, [<Stench, >]>, <23, []>, <24, []>]
+2026-03-17 11:56:00.541 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 35
+2026-03-17 11:56:00.541 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<35, []>, <34, []>, <36, [<Stench, >]>, <18, []>, <19, []>, <20, [<Stench, >]>]
+2026-03-17 11:56:00.542 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 36 - Sucess
+2026-03-17 11:56:00.542 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:00.544 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:00.548 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:00.566 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 39
+2026-03-17 11:56:00.567 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<39, []>, <38, [<Stench, >]>, <40, []>, <22, [<Stench, >]>, <23, []>, <24, []>]
+2026-03-17 11:56:00.568 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 38 - Sucess
+2026-03-17 11:56:00.571 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:00.573 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:00.574 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:00.574 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:00.575 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:00.575 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 37 - Failed
+2026-03-17 11:56:00.575 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:00.576 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:00.576 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:01.579 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:01.580 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:01.582 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 37 - Failed
+2026-03-17 11:56:01.584 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:01.586 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:01.586 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 37 - Failed
+2026-03-17 11:56:01.586 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:01.586 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:01.587 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:01.587 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:01.587 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:01.587 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:02.590 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:02.631 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:02.631 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 37 - Failed
+2026-03-17 11:56:02.597 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:02.632 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:02.632 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 37 - Failed
+2026-03-17 11:56:02.632 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:02.632 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:02.632 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:02.633 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:02.633 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:02.633 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:03.637 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:03.637 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:03.638 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 37 - Failed
+2026-03-17 11:56:03.638 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:03.638 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:03.638 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 37 - Failed
+2026-03-17 11:56:03.638 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:03.638 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:03.639 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:03.639 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:03.639 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:03.639 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:04.643 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:04.643 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:04.644 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 37 - Failed
+2026-03-17 11:56:04.643 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:04.644 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:04.644 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 37 - Failed
+2026-03-17 11:56:04.644 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:04.644 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:04.644 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:04.644 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:04.644 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:04.645 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:05.648 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:05.648 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:05.649 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:05.649 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:05.649 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 37 - Failed
+2026-03-17 11:56:05.649 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 37 - Failed
+2026-03-17 11:56:05.649 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:05.649 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:05.649 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:05.649 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:05.649 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:05.650 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:06.652 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:06.656 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:06.656 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:06.653 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:06.666 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 37 - Failed
+2026-03-17 11:56:06.666 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 37 - Failed
+2026-03-17 11:56:06.667 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:06.667 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:06.667 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:06.669 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:06.669 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:06.669 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:07.674 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:07.675 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:07.676 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 37 - Failed
+2026-03-17 11:56:07.676 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:07.676 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:07.677 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:07.680 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:07.680 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:07.681 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 37 - Failed
+2026-03-17 11:56:07.682 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:07.682 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:07.682 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:08.695 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:08.698 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:08.700 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 37 - Failed
+2026-03-17 11:56:08.697 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:08.702 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:08.702 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 37 - Failed
+2026-03-17 11:56:08.703 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:08.703 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:08.703 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:08.703 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:08.703 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:08.703 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:09.480 [ImHere] DEBUG c.s.m.d.m.a.d.c.ControlledAgent0 - Current location: 37
+2026-03-17 11:56:09.481 [ImHere] DEBUG c.s.m.d.m.a.d.c.ControlledAgent0 - Current location: 37
+2026-03-17 11:56:09.481 [ImHere] DEBUG c.s.m.d.m.a.d.c.ControlledAgent0 - Observations: [<37, [<Stench, >]>, <36, [<AgentName, Explo1>, <Stench, >]>, <38, [<AgentName, Explo2>, <Stench, >]>, <20, [<Stench, >]>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:09.713 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:09.713 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:09.716 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:09.716 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:09.719 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 37 - Failed
+2026-03-17 11:56:09.722 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 37 - Failed
+2026-03-17 11:56:09.723 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:09.723 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:09.724 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:09.725 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:09.725 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:09.726 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:10.087 [ImHere] DEBUG c.s.m.d.m.a.d.c.ControlledAgent0 - Current location: 37
+2026-03-17 11:56:10.087 [ImHere] DEBUG c.s.m.d.m.a.d.c.ControlledAgent0 - Current location: 37
+2026-03-17 11:56:10.088 [ImHere] DEBUG c.s.m.d.m.a.d.c.ControlledAgent0 - Observations: [<37, [<Stench, >]>, <36, [<AgentName, Explo1>, <Stench, >]>, <38, [<AgentName, Explo2>, <Stench, >]>, <20, [<Stench, >]>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:10.691 [ImHere] DEBUG c.s.m.d.m.a.d.c.ControlledAgent0 - Current location: 37
+2026-03-17 11:56:10.691 [ImHere] DEBUG c.s.m.d.m.a.d.c.ControlledAgent0 - Current location: 37
+2026-03-17 11:56:10.692 [ImHere] DEBUG c.s.m.d.m.a.d.c.ControlledAgent0 - Observations: [<37, [<Stench, >]>, <36, [<AgentName, Explo1>, <Stench, >]>, <38, [<AgentName, Explo2>, <Stench, >]>, <20, [<Stench, >]>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:10.731 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:10.732 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:10.732 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 37 - Failed
+2026-03-17 11:56:10.733 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:10.733 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:10.733 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:10.735 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:10.737 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:10.738 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 37 - Failed
+2026-03-17 11:56:10.741 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:10.741 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:10.741 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:11.739 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:11.740 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:11.740 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 37 - Failed
+2026-03-17 11:56:11.741 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:11.741 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:11.741 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:11.749 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:11.750 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:11.750 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 37 - Failed
+2026-03-17 11:56:11.750 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:11.751 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:11.751 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:12.200 [ImHere] DEBUG c.s.m.d.m.a.d.c.ControlledAgent0 - Current location: 37
+2026-03-17 11:56:12.200 [ImHere] DEBUG c.s.m.d.m.a.d.c.ControlledAgent0 - MoveTo: 38 - Failed
+2026-03-17 11:56:12.750 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:12.751 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:12.751 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 37 - Failed
+2026-03-17 11:56:12.751 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:12.752 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:12.752 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, []>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, []>]
+2026-03-17 11:56:12.759 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:12.760 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:12.760 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 37 - Failed
+2026-03-17 11:56:12.761 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:12.761 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:12.761 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, [<Stench, >]>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<Stench, >]>, <21, [<Stench, >]>]
+2026-03-17 11:56:12.805 [ImHere] DEBUG c.s.m.d.m.a.d.c.ControlledAgent0 - Current location: 37
+2026-03-17 11:56:12.805 [ImHere] DEBUG c.s.m.d.m.a.d.c.ControlledAgent0 - Current location: 37
+2026-03-17 11:56:12.806 [ImHere] DEBUG c.s.m.d.m.a.d.c.ControlledAgent0 - Observations: [<37, [<Stench, >]>, <36, [<AgentName, Explo1>, <Stench, >]>, <38, [<AgentName, Explo2>, <Stench, >]>, <20, [<Stench, >]>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:13.410 [ImHere] DEBUG c.s.m.d.m.a.d.c.ControlledAgent0 - Current location: 37
+2026-03-17 11:56:13.413 [ImHere] DEBUG c.s.m.d.m.a.d.c.ControlledAgent0 - MoveTo: 22 - Sucess
+2026-03-17 11:56:13.755 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 38
+2026-03-17 11:56:13.756 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <39, [<Stench, >]>, <21, [<Stench, >]>, <22, [<Stench, >]>, <23, [<Stench, >]>]
+2026-03-17 11:56:13.756 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 37 - Sucess
+2026-03-17 11:56:13.756 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 37
+2026-03-17 11:56:13.757 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 37
+2026-03-17 11:56:13.757 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<37, [<Stench, >]>, <36, [<AgentName, Explo1>]>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:13.762 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:13.762 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 37
+2026-03-17 11:56:13.762 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, []>, <35, []>, <37, [<AgentName, Explo2>, <Stench, >]>, <19, []>, <20, []>, <21, [<Stench, >]>]
+2026-03-17 11:56:13.762 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<37, [<Stench, >]>, <36, [<AgentName, Explo1>]>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:13.762 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 36
+2026-03-17 11:56:13.763 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 20 - Sucess
+2026-03-17 11:56:13.763 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<36, []>, <35, []>, <37, [<Stench, >]>, <19, []>, <20, [<AgentName, Explo2>]>, <21, [<Stench, >]>]
+2026-03-17 11:56:13.763 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 35 - Sucess
+2026-03-17 11:56:13.763 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 20
+2026-03-17 11:56:13.765 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 20
+2026-03-17 11:56:13.766 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<20, []>, <19, []>, <21, [<Stench, >]>, <6, []>, <35, [<AgentName, Explo1>]>, <36, []>, <37, [<Stench, >]>]
+2026-03-17 11:56:13.774 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 35
+2026-03-17 11:56:13.779 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 35
+2026-03-17 11:56:13.780 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<35, []>, <34, []>, <36, []>, <18, []>, <19, []>, <20, [<AgentName, Explo2>]>]
+2026-03-17 11:56:13.785 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 35
+2026-03-17 11:56:13.793 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<35, []>, <34, []>, <36, []>, <18, []>, <19, []>, <20, [<AgentName, Explo2>]>]
+2026-03-17 11:56:13.793 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 35
+2026-03-17 11:56:13.793 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<35, []>, <34, []>, <36, []>, <18, []>, <19, []>, <20, [<AgentName, Explo2>]>]
+2026-03-17 11:56:13.793 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 34 - Sucess
+2026-03-17 11:56:13.792 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 20
+2026-03-17 11:56:13.798 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<20, []>, <19, []>, <21, [<Stench, >]>, <6, []>, <35, []>, <36, []>, <37, [<Stench, >]>]
+2026-03-17 11:56:13.798 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 6 - Sucess
+2026-03-17 11:56:13.799 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 34
+2026-03-17 11:56:13.801 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 34
+2026-03-17 11:56:13.801 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<34, []>, <33, []>, <35, []>, <17, []>, <18, []>, <19, []>]
+2026-03-17 11:56:13.803 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 6
+2026-03-17 11:56:13.806 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 6
+2026-03-17 11:56:13.807 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<6, []>, <1, []>, <5, []>, <7, [<Stench, >]>, <19, []>, <20, []>, <21, [<Stench, >]>]
+2026-03-17 11:56:13.809 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 34
+2026-03-17 11:56:13.810 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<34, []>, <33, []>, <35, []>, <17, []>, <18, []>, <19, []>]
+2026-03-17 11:56:13.810 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 19 - Sucess
+2026-03-17 11:56:13.810 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 19
+2026-03-17 11:56:13.822 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 6
+2026-03-17 11:56:13.823 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<6, []>, <1, []>, <5, []>, <7, [<Stench, >]>, <19, [<AgentName, Explo1>]>, <20, []>, <21, [<Stench, >]>]
+2026-03-17 11:56:13.823 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 5 - Sucess
+2026-03-17 11:56:13.824 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 19
+2026-03-17 11:56:13.824 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<19, []>, <18, []>, <20, []>, <5, [<AgentName, Explo2>]>, <6, []>, <34, []>, <35, []>, <36, []>]
+2026-03-17 11:56:13.825 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 5
+2026-03-17 11:56:13.854 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 5
+2026-03-17 11:56:13.854 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<5, []>, <1, []>, <4, []>, <6, []>, <17, []>, <18, []>, <19, [<AgentName, Explo1>]>]
+2026-03-17 11:56:13.863 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 19
+2026-03-17 11:56:13.864 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<19, []>, <18, []>, <20, []>, <5, [<AgentName, Explo2>]>, <6, []>, <34, []>, <35, []>, <36, []>]
+2026-03-17 11:56:13.864 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 19
+2026-03-17 11:56:13.864 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<19, []>, <18, []>, <20, []>, <5, [<AgentName, Explo2>]>, <6, []>, <34, []>, <35, []>, <36, []>]
+2026-03-17 11:56:13.864 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 18 - Sucess
+2026-03-17 11:56:13.874 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 18
+2026-03-17 11:56:13.878 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 5
+2026-03-17 11:56:13.879 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<5, []>, <1, []>, <4, []>, <6, []>, <17, []>, <18, [<AgentName, Explo1>]>, <19, []>]
+2026-03-17 11:56:13.879 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 4 - Sucess
+2026-03-17 11:56:13.879 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 4
+2026-03-17 11:56:13.881 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 4
+2026-03-17 11:56:13.881 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<4, []>, <1, []>, <3, []>, <5, []>, <15, []>, <16, []>, <17, []>]
+2026-03-17 11:56:13.881 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 18
+2026-03-17 11:56:13.881 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<18, []>, <17, []>, <19, []>, <5, []>, <33, []>, <34, []>, <35, []>]
+2026-03-17 11:56:14.888 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 4
+2026-03-17 11:56:14.889 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<4, []>, <1, []>, <3, []>, <5, []>, <15, []>, <16, []>, <17, []>]
+2026-03-17 11:56:14.890 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 3 - Sucess
+2026-03-17 11:56:14.891 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 18
+2026-03-17 11:56:14.892 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<18, []>, <17, []>, <19, []>, <5, []>, <33, []>, <34, []>, <35, []>]
+2026-03-17 11:56:14.892 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 3
+2026-03-17 11:56:14.892 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 5 - Sucess
+2026-03-17 11:56:14.893 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 3
+2026-03-17 11:56:14.893 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<3, []>, <1, []>, <2, []>, <4, []>, <13, []>, <14, []>, <15, []>]
+2026-03-17 11:56:14.894 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 5
+2026-03-17 11:56:14.896 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 5
+2026-03-17 11:56:14.896 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<5, []>, <1, []>, <4, []>, <6, []>, <17, []>, <18, []>, <19, []>]
+2026-03-17 11:56:14.906 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 3
+2026-03-17 11:56:14.907 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<3, []>, <1, []>, <2, []>, <4, []>, <13, []>, <14, []>, <15, []>]
+2026-03-17 11:56:14.908 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 13 - Sucess
+2026-03-17 11:56:14.908 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 13
+2026-03-17 11:56:14.922 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 13
+2026-03-17 11:56:14.923 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<13, []>, <12, []>, <14, []>, <2, []>, <3, []>, <28, []>, <29, []>, <30, []>]
+2026-03-17 11:56:14.941 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 5
+2026-03-17 11:56:14.946 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<5, []>, <1, []>, <4, []>, <6, []>, <17, []>, <18, []>, <19, []>]
+2026-03-17 11:56:14.946 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 6 - Sucess
+2026-03-17 11:56:14.948 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 6
+2026-03-17 11:56:14.949 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 6
+2026-03-17 11:56:14.950 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<6, []>, <1, []>, <5, []>, <7, [<Stench, >]>, <19, []>, <20, []>, <21, [<Stench, >]>]
+2026-03-17 11:56:14.950 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 13
+2026-03-17 11:56:14.950 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<13, []>, <12, []>, <14, []>, <2, []>, <3, []>, <28, []>, <29, []>, <30, []>]
+2026-03-17 11:56:14.951 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 28 - Sucess
+2026-03-17 11:56:14.952 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 28
+2026-03-17 11:56:14.954 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 28
+2026-03-17 11:56:14.954 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<28, []>, <27, []>, <29, []>, <11, []>, <12, []>, <13, []>]
+2026-03-17 11:56:14.957 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 6
+2026-03-17 11:56:14.958 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<6, []>, <1, []>, <5, []>, <7, [<Stench, >]>, <19, []>, <20, []>, <21, [<Stench, >]>]
+2026-03-17 11:56:14.958 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 21 - Sucess
+2026-03-17 11:56:14.958 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 21
+2026-03-17 11:56:14.959 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 21
+2026-03-17 11:56:14.961 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<21, [<Stench, >]>, <20, []>, <22, [<Stench, >]>, <6, []>, <7, [<Stench, >]>, <36, []>, <37, [<Stench, >]>, <38, [<Stench, >]>]
+2026-03-17 11:56:15.960 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 28
+2026-03-17 11:56:15.960 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<28, []>, <27, []>, <29, []>, <11, []>, <12, []>, <13, []>]
+2026-03-17 11:56:15.961 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 27 - Sucess
+2026-03-17 11:56:15.961 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 27
+2026-03-17 11:56:15.961 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 27
+2026-03-17 11:56:15.961 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<27, []>, <26, []>, <28, []>, <10, []>, <11, []>, <12, []>]
+2026-03-17 11:56:15.964 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 21
+2026-03-17 11:56:15.964 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<21, [<Stench, >]>, <20, []>, <22, [<Stench, >]>, <6, []>, <7, [<Stench, >]>, <36, []>, <37, [<Stench, >]>, <38, [<Stench, >]>]
+2026-03-17 11:56:15.964 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 37 - Sucess
+2026-03-17 11:56:15.964 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:15.965 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:15.965 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:16.965 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 27
+2026-03-17 11:56:16.966 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<27, []>, <26, []>, <28, []>, <10, []>, <11, []>, <12, []>]
+2026-03-17 11:56:16.967 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 26 - Sucess
+2026-03-17 11:56:16.968 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 26
+2026-03-17 11:56:16.969 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 26
+2026-03-17 11:56:16.970 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<26, []>, <27, []>, <41, []>, <25, []>, <10, []>, <11, []>]
+2026-03-17 11:56:16.970 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:16.970 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:16.971 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:16.971 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:16.971 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:16.971 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:17.974 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 26
+2026-03-17 11:56:17.976 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:18.008 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<26, []>, <27, []>, <41, []>, <25, []>, <10, []>, <11, []>]
+2026-03-17 11:56:18.011 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 41 - Sucess
+2026-03-17 11:56:18.010 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:18.012 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:18.013 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 41
+2026-03-17 11:56:18.017 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:18.016 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 41
+2026-03-17 11:56:18.017 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:18.025 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<41, []>, <40, []>, <26, []>, <24, []>, <25, []>, <10, []>]
+2026-03-17 11:56:18.025 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:19.029 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Current location: 41
+2026-03-17 11:56:19.030 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - Observations: [<41, []>, <40, []>, <26, []>, <24, []>, <25, []>, <10, []>]
+2026-03-17 11:56:19.031 [Explo2] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent2 - MoveTo: 40 - Sucess
+2026-03-17 11:56:19.031 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:19.032 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:19.032 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:19.032 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:19.033 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:19.033 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:20.038 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:20.038 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:20.039 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:20.039 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:20.039 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:20.040 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:21.045 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:21.046 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:21.046 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:21.047 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:21.047 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:21.047 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:22.049 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:22.050 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:22.050 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:22.051 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:22.051 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:22.052 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:23.054 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:23.054 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:23.054 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:23.054 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:23.055 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:23.055 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:24.057 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:24.057 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:24.057 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:24.057 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:24.057 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:24.058 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:25.060 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:25.060 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:25.060 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:25.060 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:25.060 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:25.060 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:26.062 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:26.063 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:26.063 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:26.063 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:26.063 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:26.063 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:27.065 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:27.066 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:27.066 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:27.066 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:27.066 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:27.066 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:28.068 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:28.069 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:28.069 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:28.069 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:28.069 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:28.069 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:29.071 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:29.072 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:29.072 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:29.072 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:29.072 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:29.072 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:30.074 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:30.074 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:30.075 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:30.075 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:30.075 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:30.075 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:31.077 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:31.078 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:31.078 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:31.078 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:31.078 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:31.078 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:32.080 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:32.081 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:32.081 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:32.081 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:32.081 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:32.081 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:33.083 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:33.084 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:33.084 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:33.084 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:33.084 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:33.084 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:34.089 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:34.090 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:34.090 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:34.090 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:34.091 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:34.091 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:35.093 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:35.093 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:35.093 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:35.094 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:35.094 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:35.094 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:36.096 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:36.096 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:36.096 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:36.096 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:36.096 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:36.096 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:37.098 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:37.099 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:37.099 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:37.099 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:37.099 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:37.099 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:38.101 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:38.102 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:38.102 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:38.102 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:38.102 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:38.102 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:39.105 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:39.105 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:39.105 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:39.106 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:39.106 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:39.106 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:40.108 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:40.109 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:40.109 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:40.109 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:40.109 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:40.109 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:41.111 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:41.112 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]
+2026-03-17 11:56:41.112 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - MoveTo: 22 - Failed
+2026-03-17 11:56:41.112 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:41.112 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Current location: 37
+2026-03-17 11:56:41.112 [Explo1] DEBUG c.s.m.d.m.a.d.e.ExploreCoopAgent1 - Observations: [<37, [<Stench, >]>, <36, []>, <38, [<Stench, >]>, <20, []>, <21, [<Stench, >]>, <22, [<Stench, >]>]

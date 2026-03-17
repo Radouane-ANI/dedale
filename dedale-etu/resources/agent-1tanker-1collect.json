@@ -2,23 +2,29 @@
 { 
   "agentType":"agentCollect",
   "agentName": "Collect",
+  "agentClass":"dummies.DummyCollectorAgent",
+  "agentInitialContainer":"container2",
   "communicationRange": 3,
   "initialLocation": "free",
   "backPackCapacityGold": 20,
   "backPackCapacityDiamond":30, 
   "detectionRadius": 0,
   "strengthExpertise": 1,
-  "lockPickingExpertise":1
+  "lockPickingExpertise":1,
+  "userParameters": ["param1","param2"]
   },
 { 
   "agentType":"agentTanker",
   "agentName": "Tank",
+  "agentClass":"dummies.DummyTankerAgent",
+  "agentInitialContainer":"container2",
   "communicationRange": 3,
   "initialLocation": "free",
   "backPackCapacityGold": 100,
   "backPackCapacityDiamond":100, 
   "detectionRadius": 0,
   "strengthExpertise": 1,
-  "lockPickingExpertise":1
+  "lockPickingExpertise":1,
+  "userParameters": ["param"]
   }
 ]

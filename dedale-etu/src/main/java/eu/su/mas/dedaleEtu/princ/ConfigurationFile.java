@@ -46,6 +46,11 @@ public final class ConfigurationFile {
 	 ************************************/
 
 	/**
+	 * 	The GateKeeper is in charge of the Platform and of the agents within, do not change its name.
+	 */
+	public static String defaultGatekeeperName="GK";
+
+	/**
 	 * The environment is either a GraphStream (2D discrete) or JME (3D continuous) one.
 	 */
 	public static EnvironmentType ENVIRONMENT_TYPE=EnvironmentType.GS;
@@ -149,37 +154,18 @@ public final class ConfigurationFile {
 	 ************************************/
 
 	/**
+	 * All agent classes developed by users should be added in the "agents" package
+	 */
+	public static final String DEFAULT_AGENTS_CLASSPATH="eu.su.mas.dedaleEtu.mas.agents.";
+	
+	/**
 	 * Must'nt be null as it describes the native agents' capabilities 
 	 */
 	//public static String INSTANCE_CONFIGURATION_ENTITIES=null;
 	public static String INSTANCE_CONFIGURATION_ENTITIES="resources/agent-2explo-1human.json";
 	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/agentExplo-2.json";
 	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/agent-2collect.json";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/treasureHunt/map2025-entities.json";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/agentExploCoop-2.json";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/treasureHunt/map2023-entities.json";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/treasureHunt/agentTankerCollect.json";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/agentKeyboardControlled";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/hunt/map2020-entitiesTree";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/hunt/map2021-entitiesTree";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/hunt/map2020-entitiesGraph";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/hunt/map2021-entitiesGraph";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/map2018-entities2";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/map2019-entitiesExam1";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/monoAgent-entities";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/mapInterlocking2-entities";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES=null;
 	
 
-
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="src/test/java/resources/map2018-agentExplo";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="src/test/java/resources/agentExploSolo";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="src/test/java/resources/agentExploCoop-2";	
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="src/test/java/resources/map2018-agentTanker";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="src/test/java/resources/map2018-agentCollect";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="src/test/java/resources/map2018-entities";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="src/test/java/resources/map2018-agentGolem";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="src/test/java/resources/map2018-agentTankerCollect";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="src/test/java/resources/map2019-entitiesExam1";
 
 }

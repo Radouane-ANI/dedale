@@ -37,6 +37,9 @@
 		<javafx.version>21.0.2</javafx.version>
 		<gs-core.version>2.0</gs-core.version>
 		<jackson.version>2.14.3</jackson.version>
+		<dedale.version>2026.02</dedale.version>
+		<tools.version>2026.02</tools.version>
+		<jade.version>2026.02</jade.version>
 	</properties>
 
 	<repositories>
@@ -96,7 +99,7 @@
 		<dependency>
     		<groupId>com.gitlab.jade-project</groupId>
     		<artifactId>jade</artifactId>
-    		<version>master-SNAPSHOT</version>
+    		<version>${jade.version}</version>
 		</dependency>
 
 		<!-- GraphStream -->
@@ -165,7 +168,7 @@
 		<dependency>
 		    <groupId>com.gitlab.dedale</groupId>
 	    	<artifactId>dedale</artifactId>
-	    	<version>master-SNAPSHOT</version>
+	    	<version>${dedale.version}</version>
 		</dependency>
 
 		<dependency>
@@ -177,7 +180,7 @@
 		<dependency>
 			<groupId>com.gitlab.herpsonc</groupId>
 			<artifactId>tools</artifactId>
-			<version>-SNAPSHOT</version>
+			<version>${tools.version}</version>
 		</dependency>
 	</dependencies>
 

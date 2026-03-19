@@ -18,6 +18,7 @@ target/
 # -------
 *.classpath
 *.project
+.vscode/*
 *.settings
 
 /bin

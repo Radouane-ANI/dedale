@@ -15,12 +15,6 @@ import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedale.mas.agents.GateKeeperAgent;
 import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyWumpusShift;
 import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyWumpusShift2;
-<<<<<<< HEAD
-=======
-import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.controlled.ControlledAgent;
-
-import dataStructures.*;
->>>>>>> 2074eda69c18ef0aeb5efe97718f9be833644623
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
@@ -610,7 +604,7 @@ public class Principal {
 
 			List<Object> params = new ArrayList<Object>();
 			params.add(e);
-			params.add(ConfigurationFile.defaultGatekeeperName);
+			params.add(ConfigurationFile.DEFAULT_GATEKEEPER_NAME);
 
 			for (String name : allAgentNames) {
 				if (!name.equals(e.getAgentName())) {
@@ -633,6 +627,31 @@ public class Principal {
 	 *                            (first item is agentCarac object from file, second
 	 *                            is gakeKeeper's name)
 	 */
+	private static AgentController createNewDedaleAgent2(ContainerController initialContainer, Object[] agentCharacteristics) {
+		EntityCharacteristics ec = (EntityCharacteristics) agentCharacteristics[0];
+		AgentController ag = null;
+		try {
+			ag = initialContainer.createNewAgent(ec.getAgentName(), ec.getAgentClass(), agentCharacteristics);
+		} catch (StaleProxyException e) {
+			e.printStackTrace();
+		}
+		return ag;
+	}
+
+	private static Object[] merge(Object[] first, Object[] second) {
+		Object[] combined = new Object[first.length + second.length];
+		System.arraycopy(first, 0, combined, 0, first.length);
+		System.arraycopy(second, 0, combined, first.length, second.length);
+		return combined;
+	}
+
+	/**
+	 * 
+	 * @param initialContainer    container where to deploy the agent
+	 * @param agentCaracteristics Mandatory parameters used to create the agent
+	 *                            (first item is agentCarac object from file, second
+	 *                            is gakeKeeper's name)
+	 */
 	private static AgentController createNewDedaleAgent(ContainerController initialContainer, String agentName,String className, Object[] additionnalParameters){
 		String entitiesFilePath = ConfigurationFile.INSTANCE_CONFIGURATION_ENTITIES;
 		List<eu.su.mas.dedale.env.EntityCharacteristics> entities = AbstractDedaleAgent.loadEntitiesCharacteristicsFromJson("", entitiesFilePath);
@@ -644,29 +663,24 @@ public class Principal {
 				break;
 			}
 		}
-		if (targetEc == null && !entities.isEmpty()) {
-			targetEc = entities.get(0); 
+		
+		if (targetEc == null) {
+			System.err.println("Agent " + agentName + " not found in configuration file.");
+			return null;
 		}
 		
 		Object[] objtab = new Object[]{targetEc, ConfigurationFile.DEFAULT_GATEKEEPER_NAME};
-		Object []res2=merge(objtab,additionnalParameters);
-
-		// Get the agent characteristics
-		EntityCharacteristics ec = (EntityCharacteristics) agentCaracteristics[0];
-		Objects.requireNonNull(ec);
+		Object[] agentCaracteristics = merge(objtab, additionnalParameters);
 
 		// create the agent on the container given in parameter.
-		// TODO remove initialContainer from the parameters of the method and get it
-		// from the agentCaracteristics, check if already existing, if true get, if
-		// false create then add the agent.
 		AgentController ag = null;
 		try {
-			ag = initialContainer.createNewAgent(ec.getAgentName(), ec.getAgentClass(), agentCaracteristics);
+			ag = initialContainer.createNewAgent(targetEc.getAgentName(), className, agentCaracteristics);
 		} catch (StaleProxyException e) {
 			e.printStackTrace();
 		}
 		Objects.requireNonNull(ag);
-		System.out.println(ec.getAgentName() + " launched");
+		System.out.println(targetEc.getAgentName() + " launched");
 		return ag;
 	}
 

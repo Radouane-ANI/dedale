@@ -81,6 +81,11 @@ public class MapRepresentation implements Serializable {
 																				// know? (Stored as A-B)
 
 	private SerializableSimpleGraph<String, MapAttribute> sg;// used as a temporary dataStructure during migration
+	private int updateCount = 0;
+
+	public int getUpdateCount() {
+		return updateCount;
+	}
 
 	/**
 	 * Creates a standard edge identifier so we track "A-B" identically to "B-A"
@@ -143,9 +148,13 @@ public class MapRepresentation implements Serializable {
 		} else {
 			n = this.g.getNode(id);
 		}
-		n.clearAttributes();
-		n.setAttribute("ui.class", mapAttribute.toString());
-		n.setAttribute("ui.label", id);
+		String currentAttr = (String) n.getAttribute("ui.class");
+		if (currentAttr == null || !currentAttr.equals(mapAttribute.toString())) {
+			n.clearAttributes();
+			n.setAttribute("ui.class", mapAttribute.toString());
+			n.setAttribute("ui.label", id);
+			this.updateCount++;
+		}
 	}
 
 	/**
@@ -173,6 +182,7 @@ public class MapRepresentation implements Serializable {
 		this.nbEdges++;
 		try {
 			this.g.addEdge(this.nbEdges.toString(), idNode1, idNode2);
+			this.updateCount++;
 		} catch (IdAlreadyInUseException e1) {
 			System.err.println("ID existing");
 			System.exit(1);
@@ -471,6 +481,7 @@ public class MapRepresentation implements Serializable {
 																				// this edge
 			}
 		}
+		this.updateCount++;
 		// System.out.println("Merge done");
 	}
 

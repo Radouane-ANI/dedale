@@ -80,6 +80,9 @@ public class MapRepresentation implements Serializable {
 	private HashMap<String, Set<String>> knownEdgesByAgent = new HashMap<>(); // Which edges does another agent already
 																				// know? (Stored as A-B)
 
+	private HashMap<String, Integer> stenches = new HashMap<>();
+	private HashMap<String, Long> stenchTimestamps = new HashMap<>();
+
 	private SerializableSimpleGraph<String, MapAttribute> sg;// used as a temporary dataStructure during migration
 	private int updateCount = 0;
 
@@ -493,6 +496,37 @@ public class MapRepresentation implements Serializable {
 		return (this.g.nodes()
 				.filter(n -> n.getAttribute("ui.class") == MapAttribute.open.toString())
 				.findAny()).isPresent();
+	}
+
+	public synchronized void addStench(String nodeId, int stenchValue, long timestamp) {
+		this.stenches.put(nodeId, stenchValue);
+		this.stenchTimestamps.put(nodeId, timestamp);
+	}
+
+	public synchronized void cleanOldStenches(long maxAgeMillis) {
+		long currentTime = System.currentTimeMillis();
+		List<String> toRemove = new ArrayList<>();
+		for (String nodeId : stenchTimestamps.keySet()) {
+			if (currentTime - stenchTimestamps.get(nodeId) > maxAgeMillis) {
+				toRemove.add(nodeId);
+			}
+		}
+		for (String nodeId : toRemove) {
+			stenches.remove(nodeId);
+			stenchTimestamps.remove(nodeId);
+		}
+	}
+
+	public Integer getStench(String nodeId) {
+		return this.stenches.get(nodeId);
+	}
+
+	public Long getStenchTimestamp(String nodeId) {
+		return this.stenchTimestamps.get(nodeId);
+	}
+
+	public Set<String> getStenchNodes() {
+		return new HashSet<>(this.stenches.keySet());
 	}
 
 }

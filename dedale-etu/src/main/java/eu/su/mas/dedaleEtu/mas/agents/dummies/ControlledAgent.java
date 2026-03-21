@@ -5,6 +5,7 @@ import java.util.List;
 
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedale.mas.agent.behaviours.platformManagment.StartMyBehaviours;
+import eu.su.mas.dedaleEtu.mas.behaviours.SayHelloBehaviour;
 import jade.core.behaviours.Behaviour;
 
 public class ControlledAgent extends AbstractDedaleAgent {

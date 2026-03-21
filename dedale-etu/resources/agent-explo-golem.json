@@ -1,0 +1,48 @@
+[
+  {
+    "agentType": "agentExplo",
+    "agentName": "Explo1",
+    "agentClass": "dummies.explo.ExploreCoopAgent",
+    "agentInitialContainer": "container2",
+    "communicationRange": 3,
+    "initialLocation": "free",
+    "backPackCapacityGold": -1,
+    "backPackCapacityDiamond": -1,
+    "detectionRadius": 0,
+    "strengthExpertise": 1,
+    "lockPickingExpertise": 1,
+    "userParameters": [
+      "Explo2"
+    ]
+  },
+  {
+    "agentType": "agentExplo",
+    "agentName": "Explo2",
+    "agentClass": "dummies.explo.ExploreCoopAgent",
+    "agentInitialContainer": "container2",
+    "communicationRange": 3,
+    "initialLocation": "free",
+    "backPackCapacityGold": -1,
+    "backPackCapacityDiamond": -1,
+    "detectionRadius": 0,
+    "strengthExpertise": 1,
+    "lockPickingExpertise": 1,
+    "userParameters": [
+      "Explo1"
+    ]
+  },
+  {
+    "agentType": "wumpus",
+    "agentName": "Golem1",
+    "agentClass": "dummies.DummyMovingAgent",
+    "agentInitialContainer": "container3",
+    "communicationRange": 3,
+    "initialLocation": "free",
+    "backPackCapacityGold": -1,
+    "backPackCapacityDiamond": -1,
+    "detectionRadius": 1,
+    "strengthExpertise": 2,
+    "lockPickingExpertise": 1,
+    "userParameters": []
+  }
+]

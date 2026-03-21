@@ -162,7 +162,7 @@ public final class ConfigurationFile {
 	 * Must'nt be null as it describes the native agents' capabilities 
 	 */
 	//public static String INSTANCE_CONFIGURATION_ENTITIES=null;
-	public static String INSTANCE_CONFIGURATION_ENTITIES="resources/agent-2explo-1human.json";
+	public static String INSTANCE_CONFIGURATION_ENTITIES="resources/agent-explo-golem.json";
 	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/agentExplo-2.json";
 	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/agent-2collect.json";
 	

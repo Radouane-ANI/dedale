@@ -43,6 +43,8 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
 
 	/** Reference to the FSMBehaviour for lazy map init */
 	private ShareMapFSMBehaviour shareBehaviour;
+	
+	private ReceiveGolemTrailBehaviour receiveTrailBehaviour;
 
 	/**
 	 * 
@@ -52,10 +54,11 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
 	 * @param shareBehaviour  reference to the ShareMapFSMBehaviour (for lazy map init)
 	 */
 	public ExploCoopBehaviour(final AbstractDedaleAgent myagent, MapRepresentation myMap,
-			ShareMapFSMBehaviour shareBehaviour) {
+			ShareMapFSMBehaviour shareBehaviour, ReceiveGolemTrailBehaviour receiveTrailBehaviour) {
 		super(myagent);
 		this.myMap = myMap;
 		this.shareBehaviour = shareBehaviour;
+		this.receiveTrailBehaviour = receiveTrailBehaviour;
 	}
 
 	@Override
@@ -66,6 +69,9 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
 			// Also pass the map to the share behaviour
 			if (this.shareBehaviour != null) {
 				this.shareBehaviour.setMap(this.myMap);
+			}
+			if (this.receiveTrailBehaviour != null) {
+				this.receiveTrailBehaviour.setMap(this.myMap);
 			}
 		}
 

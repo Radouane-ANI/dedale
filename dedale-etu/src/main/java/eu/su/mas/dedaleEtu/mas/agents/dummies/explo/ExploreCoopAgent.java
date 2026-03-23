@@ -8,6 +8,7 @@ import eu.su.mas.dedale.mas.agent.behaviours.platformManagment.*;
 
 import eu.su.mas.dedaleEtu.mas.behaviours.ExploCoopBehaviour;
 import eu.su.mas.dedaleEtu.mas.behaviours.ShareMapFSMBehaviour;
+import eu.su.mas.dedaleEtu.mas.behaviours.ReceiveGolemTrailBehaviour;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation;
 
 import jade.core.behaviours.Behaviour;
@@ -77,7 +78,11 @@ public class ExploreCoopAgent extends AbstractDedaleAgent {
 
 		ShareMapFSMBehaviour shareBehaviour = new ShareMapFSMBehaviour(this, this.myMap, list_agentNames);
 		lb.add(shareBehaviour);
-		lb.add(new ExploCoopBehaviour(this, this.myMap, shareBehaviour));
+		
+		ReceiveGolemTrailBehaviour receiveTrailBehaviour = new ReceiveGolemTrailBehaviour(this, this.myMap);
+		lb.add(receiveTrailBehaviour);
+		
+		lb.add(new ExploCoopBehaviour(this, this.myMap, shareBehaviour, receiveTrailBehaviour));
 
 		/***
 		 * MANDATORY TO ALLOW YOUR AGENT TO BE DEPLOYED CORRECTLY
@@ -104,6 +109,23 @@ public class ExploreCoopAgent extends AbstractDedaleAgent {
 	protected void afterMove() {
 		super.afterMove();
 		// System.out.println("I migrated");
+	}
+
+	/**
+	 * Helper method to broadcast a Golem trail (stench) to all known agents.
+	 * This is part of the Gossip protocol implemented for Étape 2 of golem-hunt.
+	 */
+	public void broadcastGolemTrail(String nodeId, int stenchValue, long timestamp, List<String> receivers) {
+		jade.lang.acl.ACLMessage msg = new jade.lang.acl.ACLMessage(jade.lang.acl.ACLMessage.INFORM);
+		msg.setProtocol("GOLEM_TRAIL");
+		msg.setSender(this.getAID());
+		for (String agentName : receivers) {
+			msg.addReceiver(new jade.core.AID(agentName, jade.core.AID.ISLOCALNAME));
+		}
+		msg.setContent(nodeId + "," + stenchValue + "," + timestamp);
+		
+		// Mandatory to use the Dedale sendMessage to respect environment boundaries
+		this.sendMessage(msg);
 	}
 
 }

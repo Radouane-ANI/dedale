@@ -3,6 +3,7 @@ package eu.su.mas.dedaleEtu.princ;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import eu.su.mas.dedale.env.EntityCharacteristics;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
@@ -639,4 +640,51 @@ public class Principal {
 		return ag;
 	}
 
+	// private static Object[] merge(Object[] first, Object[] second) {
+	// 	Object[] combined = new Object[first.length + second.length];
+	// 	System.arraycopy(first, 0, combined, 0, first.length);
+	// 	System.arraycopy(second, 0, combined, first.length, second.length);
+	// 	return combined;
+	// }
+
+	// /**
+	//  * 
+	//  * @param initialContainer    container where to deploy the agent
+	//  * @param agentCaracteristics Mandatory parameters used to create the agent
+	//  *                            (first item is agentCarac object from file, second
+	//  *                            is gakeKeeper's name)
+	//  */
+	// private static AgentController createNewDedaleAgent(ContainerController initialContainer, String agentName,String className, Object[] additionnalParameters){
+	// 	String entitiesFilePath = ConfigurationFile.INSTANCE_CONFIGURATION_ENTITIES;
+	// 	List<eu.su.mas.dedale.env.EntityCharacteristics> entities = AbstractDedaleAgent.loadEntitiesCharacteristicsFromJson("", entitiesFilePath);
+	// 	eu.su.mas.dedale.env.EntityCharacteristics targetEc = null;
+		
+	// 	for(eu.su.mas.dedale.env.EntityCharacteristics ec : entities) {
+	// 		if(ec.getAgentName().equals(agentName)) {
+	// 			targetEc = ec;
+	// 			break;
+	// 		}
+	// 	}
+		
+	// 	if (targetEc == null) {
+	// 		System.err.println("Agent " + agentName + " not found in configuration file.");
+	// 		return null;
+	// 	}
+		
+	// 	Object[] objtab = new Object[]{targetEc, ConfigurationFile.DEFAULT_GATEKEEPER_NAME};
+	// 	Object[] agentCaracteristics = merge(objtab, additionnalParameters);
+
+	// 	// create the agent on the container given in parameter.
+	// 	AgentController ag = null;
+	// 	try {
+	// 		ag = initialContainer.createNewAgent(targetEc.getAgentName(), className, agentCaracteristics);
+	// 	} catch (StaleProxyException e) {
+	// 		e.printStackTrace();
+	// 	}
+	// 	Objects.requireNonNull(ag);
+	// 	System.out.println(targetEc.getAgentName() + " launched");
+	// 	return ag;
+	// }
+
 }
+

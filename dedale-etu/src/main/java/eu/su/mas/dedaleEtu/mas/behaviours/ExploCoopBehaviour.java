@@ -45,20 +45,24 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
 	private ShareMapFSMBehaviour shareBehaviour;
 	
 	private ReceiveGolemTrailBehaviour receiveTrailBehaviour;
+	
+	private List<String> agentNames;
 
 	/**
 	 * 
 	 * @param myagent         reference to the agent we are adding this behaviour to
 	 * @param myMap           known map of the world the agent is living in
-	 * @param agentNames      name of the agents to share the map with
 	 * @param shareBehaviour  reference to the ShareMapFSMBehaviour (for lazy map init)
+	 * @param receiveTrailBehaviour reference to receive behaviour
+	 * @param agentNames      List of known agents to pass to HuntBehaviour for gossip
 	 */
 	public ExploCoopBehaviour(final AbstractDedaleAgent myagent, MapRepresentation myMap,
-			ShareMapFSMBehaviour shareBehaviour, ReceiveGolemTrailBehaviour receiveTrailBehaviour) {
+			ShareMapFSMBehaviour shareBehaviour, ReceiveGolemTrailBehaviour receiveTrailBehaviour, List<String> agentNames) {
 		super(myagent);
 		this.myMap = myMap;
 		this.shareBehaviour = shareBehaviour;
 		this.receiveTrailBehaviour = receiveTrailBehaviour;
+		this.agentNames = agentNames;
 	}
 
 	@Override
@@ -117,6 +121,10 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
 				finished = true;
 				System.out
 						.println(this.myAgent.getLocalName() + " - Exploration successufully done, behaviour removed.");
+						
+				// Add HuntBehaviour to transition
+				this.myAgent.addBehaviour(new HuntBehaviour((AbstractDedaleAgent) this.myAgent, this.myMap, this.agentNames));
+				
 				for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
 					String accessibleNodeId = obs.getLeft().getLocationId();
 					if (!accessibleNodeId.equals(myPosition.getLocationId())

@@ -4,11 +4,15 @@ import java.util.HashMap;
 import java.util.List;
 
 import dataStructures.serializableGraph.SerializableSimpleGraph;
+import dataStructures.tuple.Couple;
+import eu.su.mas.dedale.env.Location;
+import eu.su.mas.dedale.env.Observation;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation.MapAttribute;
 
 import jade.core.AID;
+import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.FSMBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
@@ -20,12 +24,12 @@ import jade.lang.acl.UnreadableException;
  * 
  * <pre>
  * States:
- *   CheckMessages  – check incoming messages, decide next action
- *   SendMapPing    – broadcast MAP ping to all agents
- *   HandleMapPing  – respond to a MAP ping with SYNC-REQ + proactive delta
- *   HandleSyncReq  – respond to a SYNC-REQ by sending SHARE-TOPO delta
+ *   CheckAndPing    – check incoming messages + send periodic pings. Stays in
+ *                     this state (properly blocked) until a message arrives.
+ *   HandleMapPing   – respond to a MAP ping with SYNC-REQ + proactive delta
+ *   HandleSyncReq   – respond to a SYNC-REQ by sending SHARE-TOPO delta
  *   HandleShareTopo – merge received topology and send ACK
- *   HandleAck      – confirm a pending delta as known
+ *   HandleAck       – confirm a pending delta as known
  *
  * The FSM loops indefinitely (no last state).
  * </pre>
@@ -35,8 +39,7 @@ public class ShareMapFSMBehaviour extends FSMBehaviour {
     private static final long serialVersionUID = 1L;
 
     // State names
-    private static final String STATE_CHECK = "CheckMessages";
-    private static final String STATE_SEND_PING = "SendMapPing";
+    private static final String STATE_CHECK = "CheckAndPing";
     private static final String STATE_HANDLE_MAP = "HandleMapPing";
     private static final String STATE_HANDLE_SYNC = "HandleSyncReq";
     private static final String STATE_HANDLE_TOPO = "HandleShareTopo";
@@ -79,23 +82,21 @@ public class ShareMapFSMBehaviour extends FSMBehaviour {
         this.agentNames = agentNames;
 
         // Register states
-        registerFirstState(new CheckMessagesBehaviour(), STATE_CHECK);
-        registerState(new SendMapPingBehaviour(), STATE_SEND_PING);
+        registerFirstState(new CheckAndPingBehaviour(), STATE_CHECK);
         registerState(new HandleMapPingBehaviour(), STATE_HANDLE_MAP);
         registerState(new HandleSyncReqBehaviour(), STATE_HANDLE_SYNC);
         registerState(new HandleShareTopoBehaviour(), STATE_HANDLE_TOPO);
         registerState(new HandleAckBehaviour(), STATE_HANDLE_ACK);
 
-        // Register transitions from CheckMessages
-        registerTransition(STATE_CHECK, STATE_SEND_PING, EVT_NO_MSG);
+        // Transitions from CheckAndPing (only when a message is found)
+        registerTransition(STATE_CHECK, STATE_CHECK, EVT_NO_MSG);
         registerTransition(STATE_CHECK, STATE_HANDLE_MAP, EVT_MAP_RECEIVED);
         registerTransition(STATE_CHECK, STATE_HANDLE_SYNC, EVT_SYNC_REQ_RECEIVED);
         registerTransition(STATE_CHECK, STATE_HANDLE_TOPO, EVT_SHARE_TOPO_RECEIVED);
         registerTransition(STATE_CHECK, STATE_HANDLE_ACK, EVT_ACK_RECEIVED);
 
-        // All handler states loop back to CheckMessages
+        // All handler states loop back to CheckAndPing
         String[] resetStates = new String[] { STATE_CHECK };
-        registerDefaultTransition(STATE_SEND_PING, STATE_CHECK, resetStates);
         registerDefaultTransition(STATE_HANDLE_MAP, STATE_CHECK, resetStates);
         registerDefaultTransition(STATE_HANDLE_SYNC, STATE_CHECK, resetStates);
         registerDefaultTransition(STATE_HANDLE_TOPO, STATE_CHECK, resetStates);
@@ -141,23 +142,54 @@ public class ShareMapFSMBehaviour extends FSMBehaviour {
     // =====================================================================
 
     /**
-     * STATE: CheckMessages
-     * Reads one message from the queue and sets the transition event accordingly.
-     * If no message is found, triggers a MAP ping broadcast.
+     * STATE: CheckAndPing
+     * 
+     * Combines message checking AND periodic ping sending in a single state.
+     * 
+     * Uses Behaviour (not OneShotBehaviour) so that block() is properly
+     * honoured. The behaviour stays in this state (done() returns false)
+     * when no message is available, allowing block(500) to actually pause
+     * the FSM. It only transitions (done() returns true) when a message
+     * is found.
+     * 
      */
-    private class CheckMessagesBehaviour extends OneShotBehaviour {
+    private class CheckAndPingBehaviour extends Behaviour {
         private static final long serialVersionUID = 1L;
         private int exitCode = EVT_NO_MSG;
+        private boolean messageFound = false;
+        private long lastPingTime = 0;
+        private int lastPingUpdateCount = -1;
 
         @Override
         public void action() {
+            // 1. Periodically send MAP pings (replaces old SendMapPingBehaviour)
+            long now = System.currentTimeMillis();
+            if (myMap != null && (now - lastPingTime) > 2000) {
+                boolean agentNearby = agentProche();
+                if (agentNearby || myMap.getUpdateCount() > lastPingUpdateCount) {
+                    lastPingUpdateCount = myMap.getUpdateCount();
+                    lastPingTime = now;
+                    for (String agentName : agentNames) {
+                        ACLMessage mapMsg = new ACLMessage(ACLMessage.INFORM);
+                        mapMsg.setProtocol("MAP");
+                        mapMsg.setSender(myAgent.getAID());
+                        mapMsg.addReceiver(new AID(agentName, AID.ISLOCALNAME));
+                        ((AbstractDedaleAgent) myAgent).sendMessage(mapMsg);
+                    }
+                }
+            }
+
+            // 2. Check for incoming messages
             currentMsg = myAgent.receive(shareTemplate);
             if (currentMsg == null) {
+                // No message block and stay in this state (done() = false)
                 exitCode = EVT_NO_MSG;
-                // Small block to avoid busy-wait
+                messageFound = false;
                 block(500);
             } else {
+                // Message found set exit code and transition
                 String protocol = currentMsg.getProtocol();
+                messageFound = true;
                 switch (protocol) {
                     case "MAP":
                         exitCode = EVT_MAP_RECEIVED;
@@ -173,46 +205,53 @@ public class ShareMapFSMBehaviour extends FSMBehaviour {
                         break;
                     default:
                         exitCode = EVT_NO_MSG;
+                        messageFound = false;
+                        block(500);
                         break;
                 }
             }
         }
 
         @Override
+        public boolean done() {
+            return messageFound;
+        }
+
+        @Override
         public int onEnd() {
             return exitCode;
         }
-    }
-
-    /**
-     * STATE: SendMapPing
-     * Broadcasts a MAP message to all known agents when there are still open nodes.
-     */
-    private class SendMapPingBehaviour extends OneShotBehaviour {
-        private static final long serialVersionUID = 1L;
-        private int lastPingUpdateCount = -1;
 
         @Override
-        public void action() {
+        public void reset() {
+            super.reset();
+            messageFound = false;
+            exitCode = EVT_NO_MSG;
+        }
 
-            if (myMap == null || !myMap.hasOpenNode() || myMap.getUpdateCount() <= lastPingUpdateCount) {
-                return;
+        private boolean agentProche() {
+            try {
+                List<Couple<Location, List<Couple<Observation, String>>>> lobs = ((AbstractDedaleAgent) myAgent)
+                        .observe();
+                if (lobs == null)
+                    return false;
+                for (Couple<Location, List<Couple<Observation, String>>> points : lobs) {
+                    for (Couple<Observation, String> obs : points.getRight()) {
+                        if (obs.getLeft() == Observation.AGENTNAME) {
+                            return true;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                // ignore
             }
-            lastPingUpdateCount = myMap.getUpdateCount();
-
-            for (String agentName : agentNames) {
-                ACLMessage mapMsg = new ACLMessage(ACLMessage.INFORM);
-                mapMsg.setProtocol("MAP");
-                mapMsg.setSender(myAgent.getAID());
-                mapMsg.addReceiver(new AID(agentName, AID.ISLOCALNAME));
-                ((AbstractDedaleAgent) myAgent).sendMessage(mapMsg);
-            }
+            return false;
         }
     }
 
     /**
      * STATE: HandleMapPing
-     * Received a MAP ping → reply with SYNC-REQ and proactively send our own delta.
+     * Received a MAP ping reply with SYNC-REQ and proactively send our own delta.
      */
     private class HandleMapPingBehaviour extends OneShotBehaviour {
         private static final long serialVersionUID = 1L;
@@ -242,7 +281,7 @@ public class ShareMapFSMBehaviour extends FSMBehaviour {
 
     /**
      * STATE: HandleSyncReq
-     * Received a SYNC-REQ → send our delta via SHARE-TOPO.
+     * Received a SYNC-REQ send our delta via SHARE-TOPO.
      */
     private class HandleSyncReqBehaviour extends OneShotBehaviour {
         private static final long serialVersionUID = 1L;
@@ -264,7 +303,7 @@ public class ShareMapFSMBehaviour extends FSMBehaviour {
 
     /**
      * STATE: HandleShareTopo
-     * Received a SHARE-TOPO → merge the graph and send ACK.
+     * Received a SHARE-TOPO merge the graph and send ACK.
      */
     private class HandleShareTopoBehaviour extends OneShotBehaviour {
         private static final long serialVersionUID = 1L;
@@ -298,7 +337,7 @@ public class ShareMapFSMBehaviour extends FSMBehaviour {
 
     /**
      * STATE: HandleAck
-     * Received an ACK → confirm the pending delta as known by the receiver.
+     * Received an ACK confirm the pending delta as known by the receiver.
      */
     private class HandleAckBehaviour extends OneShotBehaviour {
         private static final long serialVersionUID = 1L;

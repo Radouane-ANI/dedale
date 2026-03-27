@@ -9,33 +9,27 @@ import eu.su.mas.dedale.env.gs.GsLocation;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation;
 import jade.core.AID;
-import jade.core.behaviours.SimpleBehaviour;
+import jade.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
 
 /**
  * HuntBehaviour: Tracks and intercepts Golems after map exploration is done.
  * Implements Étape 3 of the Golem Hunt workflow.
  */
-public class HuntBehaviour extends SimpleBehaviour {
+public class HuntBehaviour extends TickerBehaviour {
 
 	private static final long serialVersionUID = 1L;
 	private MapRepresentation myMap;
 	private List<String> agentNames;
 
 	public HuntBehaviour(AbstractDedaleAgent myagent, MapRepresentation myMap, List<String> agentNames) {
-		super(myagent);
+		super(myagent, 500);
 		this.myMap = myMap;
 		this.agentNames = agentNames;
 	}
 
 	@Override
-	public void action() {
-		// Wait a bit to not go too fast
-		try {
-			this.myAgent.doWait(500);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public void onTick() {
 
 		Location myPosition = ((AbstractDedaleAgent) this.myAgent).getCurrentPosition();
 		if (myPosition == null) return;
@@ -127,11 +121,6 @@ public class HuntBehaviour extends SimpleBehaviour {
 		if (nextNodeId != null) {
 			((AbstractDedaleAgent) this.myAgent).moveTo(new GsLocation(nextNodeId));
 		}
-	}
-
-	@Override
-	public boolean done() {
-		return false; // HuntBehaviour runs forever
 	}
 
 	private void broadcastGolemTrail(String nodeId, int stenchValue, long timestamp) {

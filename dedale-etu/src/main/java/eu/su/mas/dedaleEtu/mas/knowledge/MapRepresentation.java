@@ -529,4 +529,35 @@ public class MapRepresentation implements Serializable {
 		return new HashSet<>(this.stenches.keySet());
 	}
 
+	/**
+	 * Triangulation: Returns the set of possible Golem locations
+	 * by computing the intersection of the neighborhoods of the given stench nodes.
+	 * Since a Golem leaves a stench at distance 1, it must be in the neighborhood 
+	 * of EVERY node where a stench is currently perceived.
+	 */
+	public synchronized Set<String> getGolemPossibleLocations(Set<String> stenchNodesId) {
+		if (stenchNodesId == null || stenchNodesId.isEmpty()) {
+			return new HashSet<>();
+		}
+
+		Set<String> possiblePositions = null;
+
+		for (String nodeId : stenchNodesId) {
+			Node n = this.g.getNode(nodeId);
+			if (n != null) {
+				Set<String> neighbors = n.neighborNodes()
+						.map(Node::getId)
+						.collect(Collectors.toSet());
+				
+				if (possiblePositions == null) {
+					possiblePositions = neighbors;
+				} else {
+					possiblePositions.retainAll(neighbors);
+				}
+			}
+		}
+
+		return possiblePositions != null ? possiblePositions : new HashSet<>();
+	}
+
 }

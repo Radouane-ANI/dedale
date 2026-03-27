@@ -78,15 +78,12 @@ public class ExploreCoopAgent extends AbstractDedaleAgent {
 
 		ShareMapFSMBehaviour shareBehaviour = new ShareMapFSMBehaviour(this, this.myMap, list_agentNames);
 		lb.add(shareBehaviour);
-		
+
 		ReceiveGolemTrailBehaviour receiveTrailBehaviour = new ReceiveGolemTrailBehaviour(this, this.myMap);
 		lb.add(receiveTrailBehaviour);
-		
+
 		lb.add(new ExploCoopBehaviour(this, this.myMap, shareBehaviour, receiveTrailBehaviour, list_agentNames));
 
-		/***
-		 * MANDATORY TO ALLOW YOUR AGENT TO BE DEPLOYED CORRECTLY
-		 */
 
 		addBehaviour(new StartMyBehaviours(this, lb));
 

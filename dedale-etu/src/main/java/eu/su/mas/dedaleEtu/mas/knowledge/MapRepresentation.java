@@ -227,6 +227,58 @@ public class MapRepresentation implements Serializable {
 		return shortestPath;
 	}
 
+	public synchronized List<String> getShortestPathAvoiding(String idFrom, String idTo, List<String> nodesToAvoid) {
+		List<String> shortestPath = new ArrayList<String>();
+
+		// GraphStream doesn't inherently penalize nodes, so we penalize edges leading to/from obstacles.
+		try {
+			// Temporarily assign high weight to edges connected to avoided nodes
+			if (nodesToAvoid != null) {
+				for (String avoidId : nodesToAvoid) {
+					Node n = this.g.getNode(avoidId);
+					if (n != null) {
+						n.edges().forEach(e -> e.setAttribute("weight", 999999.0));
+					}
+				}
+			}
+
+			Dijkstra dijkstra = new Dijkstra(Dijkstra.Element.EDGE, "result", "weight");
+			dijkstra.init(g);
+			dijkstra.setSource(g.getNode(idFrom));
+			dijkstra.compute();
+
+			Node destination = g.getNode(idTo);
+			if (destination != null) {
+				List<Node> path = dijkstra.getPath(destination).getNodePath();
+				Iterator<Node> iter = path.iterator();
+				while (iter.hasNext()) {
+					shortestPath.add(iter.next().getId());
+				}
+			}
+			dijkstra.clear();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			// Restore edge weights
+			if (nodesToAvoid != null) {
+				for (String avoidId : nodesToAvoid) {
+					Node n = this.g.getNode(avoidId);
+					if (n != null) {
+						n.edges().forEach(e -> e.removeAttribute("weight"));
+					}
+				}
+			}
+		}
+
+		if (shortestPath.isEmpty()) {
+			return null;
+		} else {
+			shortestPath.remove(0); // remove origin
+		}
+		return shortestPath;
+	}
+
 	public List<String> getShortestPathToClosestOpenNode(String myPosition) {
 		// 1) Get all openNodes
 		List<String> opennodes = getOpenNodes();

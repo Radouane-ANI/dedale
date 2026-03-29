@@ -124,9 +124,9 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
 						.println(this.myAgent.getLocalName() + " - Exploration successufully done, behaviour removed.");
 
 				// Add HuntBehaviour to transition
-					this.myAgent.addBehaviour(
-							new HuntBehaviour((AbstractDedaleAgent) this.myAgent, this.myMap, this.agentNames));
-					finished = true;
+				this.myAgent.addBehaviour(
+						new HuntBehaviour((AbstractDedaleAgent) this.myAgent, this.myMap, this.agentNames));
+				finished = true;
 
 			} else {
 				// 3.1 If there exist one open node directly reachable, go for it,

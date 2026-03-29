@@ -189,6 +189,7 @@ public class ShareMapFSMBehaviour extends FSMBehaviour {
             } else {
                 // Message found set exit code and transition
                 String protocol = currentMsg.getProtocol();
+                //System.out.println(myAgent.getLocalName() + " received " + protocol + " from " + currentMsg.getSender().getLocalName());
                 messageFound = true;
                 switch (protocol) {
                     case "MAP":
@@ -243,7 +244,7 @@ public class ShareMapFSMBehaviour extends FSMBehaviour {
                     }
                 }
             } catch (Exception e) {
-                // ignore
+                e.printStackTrace();
             }
             return false;
         }

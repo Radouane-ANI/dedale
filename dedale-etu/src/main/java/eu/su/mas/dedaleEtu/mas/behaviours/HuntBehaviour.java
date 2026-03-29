@@ -1,7 +1,9 @@
 package eu.su.mas.dedaleEtu.mas.behaviours;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-
+import java.util.Set;
 import dataStructures.tuple.Couple;
 import eu.su.mas.dedale.env.Location;
 import eu.su.mas.dedale.env.Observation;
@@ -32,16 +34,16 @@ public class HuntBehaviour extends TickerBehaviour {
 	public void onTick() {
 
 		Location myPosition = ((AbstractDedaleAgent) this.myAgent).getCurrentPosition();
-		if (myPosition == null) return;
+		if (myPosition == null)
+			return;
 
 		// 1. Observe the environment
 		List<Couple<Location, List<Couple<Observation, String>>>> lobs = ((AbstractDedaleAgent) this.myAgent).observe();
-			
+
 		// 2. Collect Odors & Gossip
-		String bestAdjacentStenchNode = null;
-		int highestStenchValue = -1;
 		long currentTimestamp = System.currentTimeMillis();
-			
+		boolean adjacentStenchPerceived = false;
+
 		for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
 			String locId = obs.getLeft().getLocationId();
 			for (Couple<Observation, String> o : obs.getRight()) {
@@ -50,82 +52,142 @@ public class HuntBehaviour extends TickerBehaviour {
 					try {
 						stenchValue = Integer.parseInt(o.getRight());
 					} catch (NumberFormatException e) {
-						// Fallback if parsing fails
 						stenchValue = 1;
 					}
-						
-					// Add to local map memory
+
 					this.myMap.addStench(locId, stenchValue, currentTimestamp);
-						
-					// Gossip to other agents
 					broadcastGolemTrail(locId, stenchValue, currentTimestamp);
-						
-					// Traqueur: find the node with the STRONGEST stench (assuming higher value = stronger odor)
-					if (!locId.equals(myPosition.getLocationId()) && stenchValue > highestStenchValue) {
-						highestStenchValue = stenchValue;
-						bestAdjacentStenchNode = locId;
+
+					if (!locId.equals(myPosition.getLocationId())) {
+						adjacentStenchPerceived = true;
 					}
 				}
 			}
 		}
-			
+
 		// 3. Clean old stenches
-		this.myMap.cleanOldStenches(3000); // 15 seconds max age
-			
-		// 4. Selection of Target (Traqueur / Intercepteur)
+		this.myMap.cleanOldStenches(3000); // 3 seconds max age for reactive hunt
+
+		// 3.5. Identify Obstacles (Adjacent Allies)
+		List<String> obstacles = new ArrayList<>();
+		for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
+			if (containsAgent(obs.getRight())) {
+				obstacles.add(obs.getLeft().getLocationId());
+			}
+		}
+
+		// 4. Selection of Target (Traqueur / Intercepteur) via Triangulation
 		String nextNodeId = null;
-			
-		if (bestAdjacentStenchNode != null) {
-			// LOGIQUE TRAQUEUR: We have an adjacent stench, go towards the strongest one.
-			nextNodeId = bestAdjacentStenchNode;
-		} else {
-			// LOGIQUE INTERCEPTEUR: No adjacent stench. Look for the closest one in the map (Gossip / Memory).
-			List<String> shortestPathToStench = null;
-			int minDistance = Integer.MAX_VALUE;
-				
-			for (String stenchNode : this.myMap.getStenchNodes()) {
-				if (stenchNode.equals(myPosition.getLocationId())) continue;
-					
-				List<String> path = this.myMap.getShortestPath(myPosition.getLocationId(), stenchNode);
-				if (path != null && path.size() < minDistance) {
-					minDistance = path.size();
-					shortestPathToStench = path;
+
+		Set<String> allStenches = this.myMap.getStenchNodes();
+		long maxTimestamp = -1;
+		for (String n : allStenches) {
+			long ts = this.myMap.getStenchTimestamp(n);
+			if (ts > maxTimestamp) {
+				maxTimestamp = ts;
+			}
+		}
+
+		Set<String> freshestStenches = new HashSet<>();
+		if (maxTimestamp != -1) {
+			for (String n : allStenches) {
+				// Group stenches created within a 1s window (allow for gossip latency)
+				if (this.myMap.getStenchTimestamp(n) >= maxTimestamp - 1000) {
+					freshestStenches.add(n);
 				}
 			}
-				
-			if (shortestPathToStench != null && !shortestPathToStench.isEmpty()) {
-				// Interceptor movement: Take the first step towards the closest stench node
-				nextNodeId = shortestPathToStench.get(0);
+		}
+
+		Set<String> possibleLocs = this.myMap.getGolemPossibleLocations(freshestStenches);
+		String targetNodeId = null;
+
+		if (possibleLocs != null && !possibleLocs.isEmpty()) {
+			// Find the closest possible location from deduced set
+			int minDist = Integer.MAX_VALUE;
+			for (String loc : possibleLocs) {
+				if (loc.equals(myPosition.getLocationId()))
+					continue;
+				List<String> path = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), loc, obstacles);
+				if (path != null && path.size() < minDist) {
+					minDist = path.size();
+					targetNodeId = loc;
+				}
+			}
+
+			// If we are literally on the location, maybe the Golem is here or we collided.
+			if (targetNodeId == null && possibleLocs.contains(myPosition.getLocationId())) {
+				targetNodeId = myPosition.getLocationId(); // we are already on the best node or no path
+			}
+		} else {
+			// Fallback: just go to the closest stench node if triangulation yields nothing
+			int minDist = Integer.MAX_VALUE;
+			for (String loc : allStenches) {
+				if (loc.equals(myPosition.getLocationId()))
+					continue;
+				List<String> path = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), loc, obstacles);
+				if (path != null && path.size() < minDist) {
+					minDist = path.size();
+					targetNodeId = loc;
+				}
+			}
+		}
+
+		// Roles: Interceptor or Tracker?
+		// We'll use adjacentStenchPerceived as a simple heuristic:
+		// If we perceive the stench directly, we TRACE it (Tracker).
+		// Else if we don't perceive it but know about it via Gossip, we INTERCEPT (aim
+		// for a node near target).
+		if (targetNodeId != null && !targetNodeId.equals(myPosition.getLocationId())) {
+			if (adjacentStenchPerceived) {
+				// TRAQUEUR: Move directly towards the target
+				List<String> path = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), targetNodeId,
+						obstacles);
+				if (path != null && !path.isEmpty()) {
+					nextNodeId = path.get(0);
+				}
 			} else {
-				// No stench known at all -> fallback to patrol (pick random non-occupied node)
+				// INTERCEPTEUR: Move towards target, but idealy stop 1 node away to cut off.
+				// In Dedale, we can simply try to path to targetNodeId as well for now, or pick
+				// an adjacent node of target.
+				// For simplicity, interceptor just behaves as a tracker that paths to target.
+				// Real interception (blocking) will be fully developed in Etape 5 (Degree).
+				List<String> path = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), targetNodeId,
+						obstacles);
+				if (path != null && !path.isEmpty()) {
+					nextNodeId = path.get(0);
+				}
+			}
+		}
+
+		// 5. Fallback Default Patrol
+		if (nextNodeId == null) {
+			for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
+				String accessibleNodeId = obs.getLeft().getLocationId();
+				if (!accessibleNodeId.equals(myPosition.getLocationId()) && !containsAgent(obs.getRight())) {
+					nextNodeId = accessibleNodeId;
+					break;
+				}
+			}
+			if (nextNodeId == null && lobs.size() > 1) {
 				for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
-					String accessibleNodeId = obs.getLeft().getLocationId();
-					if (!accessibleNodeId.equals(myPosition.getLocationId()) && !containsAgent(obs.getRight())) {
-						nextNodeId = accessibleNodeId;
+					if (!obs.getLeft().getLocationId().equals(myPosition.getLocationId())) {
+						nextNodeId = obs.getLeft().getLocationId();
 						break;
 					}
 				}
-				// If all adjacent nodes are occupied, just pick any valid adjacent
-				if (nextNodeId == null && lobs.size() > 1) {
-					for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
-						if (!obs.getLeft().getLocationId().equals(myPosition.getLocationId())) {
-							nextNodeId = obs.getLeft().getLocationId();
-							break;
-						}
-					}
-				}
 			}
 		}
-			
-		// 5. Move
+
+		// 6. Move
 		if (nextNodeId != null) {
 			((AbstractDedaleAgent) this.myAgent).moveTo(new GsLocation(nextNodeId));
 		}
 	}
 
 	private void broadcastGolemTrail(String nodeId, int stenchValue, long timestamp) {
-		if (this.agentNames == null || this.agentNames.isEmpty()) return;
-		
+		if (this.agentNames == null || this.agentNames.isEmpty())
+			return;
+
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		msg.setProtocol("GOLEM_TRAIL");
 		msg.setSender(this.myAgent.getAID());
@@ -135,10 +197,10 @@ public class HuntBehaviour extends TickerBehaviour {
 		msg.setContent(nodeId + "," + stenchValue + "," + timestamp);
 		((AbstractDedaleAgent) this.myAgent).sendMessage(msg);
 	}
-	
+
 	private boolean containsAgent(List<Couple<Observation, String>> obsList) {
 		for (Couple<Observation, String> obs : obsList) {
-			if (obs.getLeft() == Observation.AGENTNAME) {
+			if (obs.getLeft() == Observation.AGENTNAME && this.agentNames.contains(obs.getRight())) {
 				return true;
 			}
 		}

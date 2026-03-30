@@ -23,11 +23,8 @@ import org.graphstream.ui.fx_viewer.FxViewPanel;
 import org.graphstream.ui.fx_viewer.FxViewer;
 import org.graphstream.ui.javafx.FxGraphRenderer;
 import org.graphstream.ui.view.Viewer;
-import org.graphstream.ui.view.Viewer.CloseFramePolicy;
-
 import dataStructures.serializableGraph.*;
 import dataStructures.tuple.Couple;
-import eu.su.mas.dedale.mas.agent.knowledge.MapRepresentation.MapAttribute;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -184,7 +181,10 @@ public class MapRepresentation implements Serializable {
 	public synchronized void addEdge(String idNode1, String idNode2) {
 		this.nbEdges++;
 		try {
-			this.g.addEdge(this.nbEdges.toString(), idNode1, idNode2);
+			Edge e = this.g.addEdge(this.nbEdges.toString(), idNode1, idNode2);
+			if (e != null) {
+				e.setAttribute("weight", 1.0);
+			}
 			this.updateCount++;
 		} catch (IdAlreadyInUseException e1) {
 			System.err.println("ID existing");
@@ -192,7 +192,6 @@ public class MapRepresentation implements Serializable {
 		} catch (EdgeRejectedException e2) {
 			this.nbEdges--;
 		} catch (ElementNotFoundException e3) {
-
 		}
 	}
 
@@ -265,7 +264,7 @@ public class MapRepresentation implements Serializable {
 				for (String avoidId : nodesToAvoid) {
 					Node n = this.g.getNode(avoidId);
 					if (n != null) {
-						n.edges().forEach(e -> e.removeAttribute("weight"));
+						n.edges().forEach(e -> e.setAttribute("weight", 1.0));
 					}
 				}
 			}

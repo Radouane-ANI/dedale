@@ -39,10 +39,11 @@ public class ReceiveGolemTrailBehaviour extends SimpleBehaviour {
 						String nodeId = parts[0];
 						int stenchValue = Integer.parseInt(parts[1]);
 						long timestamp = Long.parseLong(parts[2]);
-						
+
 						this.myMap.addStench(nodeId, stenchValue, timestamp);
 					} catch (NumberFormatException e) {
-						System.err.println("ReceiveGolemTrailBehaviour: Error parsing GOLEM_TRAIL msg content: " + content);
+						System.err.println(
+								"ReceiveGolemTrailBehaviour: Error parsing GOLEM_TRAIL msg content: " + content);
 					}
 				}
 			}
@@ -55,7 +56,7 @@ public class ReceiveGolemTrailBehaviour extends SimpleBehaviour {
 	public boolean done() {
 		return false; // Loop forever
 	}
-	
+
 	public void setMap(MapRepresentation map) {
 		this.myMap = map;
 	}

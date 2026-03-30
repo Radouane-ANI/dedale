@@ -141,11 +141,11 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
 					}
 				}
 
-				if (nextNodeId != null && contientAgents(nextNodeId)) {
+				if (nextNodeId != null && contientAgents(nextNodeId, lobs)) {
 					for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
 						String accessibleNodeId = obs.getLeft().getLocationId();
 						if (!accessibleNodeId.equals(myPosition.getLocationId())
-								&& !contientAgents(accessibleNodeId)) {
+								&& !contientAgents(accessibleNodeId, lobs)) {
 							nextNodeId = accessibleNodeId;
 							break;
 						}
@@ -165,10 +165,7 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
 		return finished;
 	}
 
-	private boolean contientAgents(String nodeID) {
-		List<Couple<Location, List<Couple<Observation, String>>>> lobs = ((AbstractDedaleAgent) this.myAgent)
-				.observe();// myPosition
-
+	private boolean contientAgents(String nodeID, List<Couple<Location, List<Couple<Observation, String>>>> lobs) {
 		for (Couple<Location, List<Couple<Observation, String>>> points : lobs) {
 			if (points.getLeft().getLocationId().equals(nodeID)) {
 				for (Couple<Observation, String> obs : points.getRight()) {

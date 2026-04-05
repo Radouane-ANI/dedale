@@ -81,9 +81,11 @@ public class ExploreCoopAgent extends AbstractDedaleAgent {
 
 		ReceiveGolemTrailBehaviour receiveTrailBehaviour = new ReceiveGolemTrailBehaviour(this, this.myMap);
 		lb.add(receiveTrailBehaviour);
+		
+		eu.su.mas.dedaleEtu.mas.behaviours.ReceiveSiegeStatusBehaviour receiveSiegeBehaviour = new eu.su.mas.dedaleEtu.mas.behaviours.ReceiveSiegeStatusBehaviour(this, this.myMap);
+		lb.add(receiveSiegeBehaviour);
 
 		lb.add(new ExploCoopBehaviour(this, this.myMap, shareBehaviour, receiveTrailBehaviour, list_agentNames));
-
 
 		addBehaviour(new StartMyBehaviours(this, lb));
 

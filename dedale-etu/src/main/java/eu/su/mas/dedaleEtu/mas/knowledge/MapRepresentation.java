@@ -80,6 +80,13 @@ public class MapRepresentation implements Serializable {
 	private HashMap<String, Integer> stenches = new HashMap<>();
 	private HashMap<String, Long> stenchTimestamps = new HashMap<>();
 
+	// --- Siege Protocol Data ---
+	private String siegeGolemPos = null;
+	private long siegeTimestamp = 0;
+	private HashMap<String, String> siegeStaff = new HashMap<>();
+	private HashMap<String, Long> siegeStaffTimestamps = new HashMap<>();
+	private Set<String> siegeHoles = new HashSet<>();
+
 	private SerializableSimpleGraph<String, MapAttribute> sg;// used as a temporary dataStructure during migration
 	private int updateCount = 0;
 
@@ -273,6 +280,19 @@ public class MapRepresentation implements Serializable {
 		if (shortestPath.isEmpty()) {
 			return null;
 		} else {
+			// Vérification stricte : si le chemin physiquement trouvé passe par un obstacle, on le coupe.
+			// (Car Dijkstra avec simple pénalité le renvoyait quand même en absence d'alternative)
+			if (nodesToAvoid != null) {
+				for (int i = 1; i < shortestPath.size() - 1; i++) {
+					if (nodesToAvoid.contains(shortestPath.get(i))) {
+						return null; // Aucun chemin réellement libre
+					}
+				}
+				// On vérifie aussi le tout premier pas
+				if (shortestPath.size() > 1 && nodesToAvoid.contains(shortestPath.get(1)) && !shortestPath.get(1).equals(idTo)) {
+					return null;
+				}
+			}
 			shortestPath.remove(0); // remove origin
 		}
 		return shortestPath;
@@ -610,5 +630,71 @@ public class MapRepresentation implements Serializable {
 
 		return possiblePositions != null ? possiblePositions : new HashSet<>();
 	}
+
+	/**
+	 * Returns the list of node IDs adjacent to the given nodeId.
+	 */
+	public synchronized List<String> getNeighbors(String nodeId) {
+		List<String> neighbors = new ArrayList<>();
+		Node n = this.g.getNode(nodeId);
+		if (n != null) {
+			n.neighborNodes().forEach(neighbor -> neighbors.add(neighbor.getId()));
+		}
+		return neighbors;
+	}
+
+	/**
+	 * Siege Coordination: Update the latest known state of the Golem siege.
+	 */
+	public synchronized void updateSiegeStatus(String golemPos, String agentName, String agentPos, Set<String> holes, long timestamp) {
+		if (timestamp >= this.siegeTimestamp && golemPos != null) {
+			this.siegeGolemPos = golemPos;
+			this.siegeTimestamp = timestamp;
+		}
+		if (holes != null) {
+			this.siegeHoles = holes;
+		}
+		if (agentName != null && agentPos != null) {
+			this.siegeStaff.put(agentName, agentPos);
+			this.siegeStaffTimestamps.put(agentName, timestamp);
+		}
+	}
+
+	/**
+	 * Clean old siege staff positions to prevent indefinitely avoiding ghost allies.
+	 */
+	public synchronized void cleanOldSiegeData(long maxAgeMillis) {
+		long currentTime = System.currentTimeMillis();
+		// Clean staff
+		List<String> toRemove = new ArrayList<>();
+		for (String agent : siegeStaffTimestamps.keySet()) {
+			if (currentTime - siegeStaffTimestamps.get(agent) > maxAgeMillis) {
+				toRemove.add(agent);
+			}
+		}
+		for (String agent : toRemove) {
+			siegeStaff.remove(agent);
+			siegeStaffTimestamps.remove(agent);
+		}
+		
+		// If the siege itself is too old, clear it
+		if (currentTime - this.siegeTimestamp > maxAgeMillis + 2000) {
+			this.siegeGolemPos = null;
+			this.siegeHoles.clear();
+		}
+	}
+
+	public String getSiegeGolemPos() {
+		return siegeGolemPos;
+	}
+
+	public Set<String> getSiegeHoles() {
+		return new HashSet<>(siegeHoles);
+	}
+
+	public List<String> getSiegeStaffLocations() {
+		return new ArrayList<>(siegeStaff.values());
+	}
+
 
 }

@@ -69,33 +69,43 @@ public class HuntBehaviour extends TickerBehaviour {
 			}
 		}
 
-		// 3. Clean old stenches
-		this.myMap.cleanOldStenches(5000); // Temps intermédiaire (5s) pour tolérer un couloir bloqué sans oublier le
-											// Golem
+		// 3. Clean old stenches & siege data
+		this.myMap.cleanOldStenches(5000); // Temps intermédiaire (5s) pour tolérer un couloir bloqué sans oublier le Golem
+		this.myMap.cleanOldSiegeData(3000); // Nettoyer les positions alliées obsolètes
 
 		// 3.5. Identify Obstacles (Adjacent Allies) & Check for Visible GRC
 		List<String> obstacles = new ArrayList<>();
 		String visibleGolemNode = null;
+		boolean allyVisible = false;
 		for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
 			if (containsAlly(obs.getRight())) {
 				obstacles.add(obs.getLeft().getLocationId());
+				allyVisible = true;
 			}
 			String enemy = getEnemyName(obs.getRight());
 			if (enemy != null) {
 				visibleGolemNode = obs.getLeft().getLocationId();
 			}
 		}
+		
+		// Add remote siege staff to obstacles to avoid crowding
+		List<String> siegeStaff = this.myMap.getSiegeStaffLocations();
+		for(String s : siegeStaff) {
+			if(!obstacles.contains(s) && !s.equals(myPosition.getLocationId())) {
+				obstacles.add(s);
+			}
+		}
 
-		// 4. Selection of Target
+		// 4. Selection of Target & Siege Coordination
 		String nextNodeId = null;
 		String targetNodeId = null;
-		List<String> bestPath = null; // Mémorise le chemin vers targetNodeId pour éviter un double calcul Dijkstra
+		List<String> bestPath = null;
+
+		String actualGolemPos = null;
 
 		if (visibleGolemNode != null) {
-			// Le Golem est en contact visuel direct, on abandonne la triangulation !
-			targetNodeId = visibleGolemNode;
-			System.out.println(this.myAgent.getLocalName() + " - Golem VISUELLEMENT repéré en " + targetNodeId
-					+ " ! Je le poursuis !");
+			actualGolemPos = visibleGolemNode;
+			System.out.println(this.myAgent.getLocalName() + " - Golem VISUELLEMENT repéré en " + actualGolemPos + " !");
 		} else {
 			// Triangulation classique
 			Set<String> allStenches = this.myMap.getStenchNodes();
@@ -110,8 +120,6 @@ public class HuntBehaviour extends TickerBehaviour {
 			Set<String> freshestStenches = new HashSet<>();
 			if (maxTimestamp != -1) {
 				for (String n : allStenches) {
-					// Group stenches ONLY if almost simultaneous (100ms) to avoid mixing different
-					// Golem steps !
 					if (this.myMap.getStenchTimestamp(n) >= maxTimestamp - 100) {
 						freshestStenches.add(n);
 					}
@@ -119,47 +127,84 @@ public class HuntBehaviour extends TickerBehaviour {
 			}
 
 			Set<String> possibleLocs = this.myMap.getGolemPossibleLocations(freshestStenches);
+			if (possibleLocs != null && possibleLocs.size() == 1) { // Triangulation parfaite
+				actualGolemPos = possibleLocs.iterator().next();
+			} else if (this.myMap.getSiegeGolemPos() != null) {
+				// Utiliser la position du siège partagée si on l'a
+				actualGolemPos = this.myMap.getSiegeGolemPos();
+			}
+		}
 
-			if (possibleLocs != null && !possibleLocs.isEmpty()) {
-				// Find the closest possible location from deduced set
+		// Siège Logic
+		if (actualGolemPos != null) {
+			List<String> neighbors = this.myMap.getNeighbors(actualGolemPos);
+			int D = neighbors.size();
+			int A = (this.agentNames != null ? this.agentNames.size() : 0) + 1;
+			
+			// Si on est adjacent au Golem, on est "en poste"
+			boolean inPosition = neighbors.contains(myPosition.getLocationId()) || myPosition.getLocationId().equals(actualGolemPos);
+			
+			Set<String> holes = new HashSet<>(neighbors);
+			holes.removeAll(obstacles); // Les obstacles (y compris les alliés du siège connus) bouchent les trous
+			holes.remove(myPosition.getLocationId());
+
+			// Broadcast status si on observe un allié proche ou pour informer le reseau
+			if (inPosition && allyVisible) {
+				broadcastSiegeStatus(actualGolemPos, String.join(",", holes));
+			}
+			
+			if (inPosition && !myPosition.getLocationId().equals(actualGolemPos)) {
+				targetNodeId = myPosition.getLocationId(); // stay and block l'issue adjacente
+			} else {
+				// Il faut choisir un Hole
+				String bestHole = null;
 				int minDist = Integer.MAX_VALUE;
-				for (String loc : possibleLocs) {
-					if (loc.equals(myPosition.getLocationId()))
-						continue;
-					List<String> path = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), loc, obstacles);
+				
+				// Stratégie d'Encerclement par le Degré des Nœuds
+				List<String> sortedHoles = new ArrayList<>(holes);
+				if (A < D) {
+					// Prioriser les trous qui mènent vers des carrefours (degré élevé)
+					sortedHoles.sort((h1, h2) -> Integer.compare(this.myMap.getNeighbors(h2).size(), this.myMap.getNeighbors(h1).size()));
+				}
+				
+				// CRUCIAL: On ne doit JAMAIS traverser le Golem pour aller boucher un trou.
+				List<String> obstaclesPourContournement = new ArrayList<>(obstacles);
+				obstaclesPourContournement.add(actualGolemPos);
+
+				for (String hole : sortedHoles) {
+					List<String> path = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), hole, obstaclesPourContournement);
 					if (path != null && path.size() < minDist) {
 						minDist = path.size();
-						targetNodeId = loc;
-						bestPath = path; // mémorise le chemin pour ne pas le recalculer
+						bestHole = hole;
+						bestPath = path;
 					}
 				}
-
-				// If we are literally on the location, maybe the Golem is here or we collided.
-				if (targetNodeId == null && possibleLocs.contains(myPosition.getLocationId())) {
-					targetNodeId = myPosition.getLocationId(); // we are already on the best node or no path
+				
+				if (bestHole != null) {
+					targetNodeId = bestHole;
+				} else {
+					targetNodeId = actualGolemPos; // Fallback: visons le golem
 				}
-			} else {
-				// Fallback: If Triangulation yields empty, follow the ABSOLUTELY CURRENT
-				// FRESHEST part of the trail!
-				int minDist = Integer.MAX_VALUE;
-				long bestTs = -1;
+			}
+		} else {
+			// Pas de Golem clair, on chasse à l'odeur (Fallback stenches)
+			Set<String> allStenches = this.myMap.getStenchNodes();
+			int minDist = Integer.MAX_VALUE;
+			long bestTs = -1;
 
-				for (String loc : allStenches) {
-					if (loc.equals(myPosition.getLocationId()))
-						continue;
+			for (String loc : allStenches) {
+				if (loc.equals(myPosition.getLocationId())) continue;
+				if (obstacles.contains(loc)) continue; // Ne jamais cibler la cause d'une odeur si un allié y est déjà
 
-					long ts = this.myMap.getStenchTimestamp(loc);
-					List<String> path = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), loc, obstacles);
+				long ts = this.myMap.getStenchTimestamp(loc);
+				List<String> path = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), loc, obstacles);
 
-					if (path != null && !path.isEmpty()) {
-						// Prioriser d'ABORD l'odeur la plus récente (pour ne pas remonter la piste à
-						// l'envers)
-						if (ts > bestTs || (ts == bestTs && path.size() < minDist)) {
-							bestTs = ts;
-							minDist = path.size();
-							targetNodeId = loc;
-							bestPath = path; // mémorise le chemin pour ne pas le recalculer
-						}
+				if (path != null && !path.isEmpty()) {
+					if (ts > bestTs || (ts == bestTs && path.size() < minDist)) {
+						bestTs = ts;
+						minDist = path.size();
+						targetNodeId = loc;
+						bestPath = path;
 					}
 				}
 			}
@@ -180,23 +225,10 @@ public class HuntBehaviour extends TickerBehaviour {
 						nextNodeId = myPosition.getLocationId();
 						this.consecutiveWaitTicks = 0; // On est au poste, c'est un arrêt voulu
 					} else {
+						// Confiance absolue dans le Pathfinding (la carte + Dijkstra)
+						// S'il y a un obstacle, le chemin returned serait déjà null.
 						nextNodeId = path.get(0);
-						if (obstacles.contains(nextNodeId)) {
-							// Si la route est bloquée par un ami, on incremente le compteur d'interblocage
-							this.consecutiveWaitTicks++;
-							if (this.consecutiveWaitTicks > 4) {
-								// Ça fait trop longtemps qu'on est bloqué par un allié (2 sec)
-								// On force un petit "nudge" aléatoire pour casser le verrou
-								System.out.println(this.myAgent.getLocalName() + " - INTERBLOCAGE ALLIÉ sur "
-										+ nextNodeId + ". Je me décale !");
-								nextNodeId = null; // Déclenche Fallback Patrol
-							} else {
-								nextNodeId = myPosition.getLocationId(); // Attente courtoise
-							}
-						} else {
-							// Mouvement normal, on reset le compteur
-							this.consecutiveWaitTicks = 0;
-						}
+						this.consecutiveWaitTicks = 0;
 					}
 				}
 			}
@@ -241,6 +273,25 @@ public class HuntBehaviour extends TickerBehaviour {
 			msg.addReceiver(new AID(agentName, AID.ISLOCALNAME));
 		}
 		msg.setContent(nodeId + "," + stenchValue + "," + timestamp);
+		((AbstractDedaleAgent) this.myAgent).sendMessage(msg);
+	}
+
+	private void broadcastSiegeStatus(String golemPos, String holesStr) {
+		if (this.agentNames == null || this.agentNames.isEmpty()) return;
+
+		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+		msg.setProtocol("SIEGE_STATUS");
+		msg.setSender(this.myAgent.getAID());
+		for (String agentName : this.agentNames) {
+			msg.addReceiver(new AID(agentName, AID.ISLOCALNAME));
+		}
+		
+		Location myPos = ((AbstractDedaleAgent) this.myAgent).getCurrentPosition();
+		String myLocStr = myPos != null ? myPos.getLocationId() : "null";
+		
+		// Format: GolemPos;SenderName:SenderPos;Hole1,Hole2;Timestamp
+		String content = golemPos + ";" + this.myAgent.getLocalName() + ":" + myLocStr + ";" + holesStr + ";" + System.currentTimeMillis();
+		msg.setContent(content);
 		((AbstractDedaleAgent) this.myAgent).sendMessage(msg);
 	}
 

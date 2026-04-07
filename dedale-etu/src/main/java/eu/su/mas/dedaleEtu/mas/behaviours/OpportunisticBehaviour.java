@@ -136,9 +136,10 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 		}
 
 		boolean isTrailHot = (maxTimestamp != -1 && (currentTimestamp - maxTimestamp) < 4000); // Trail freshness threshold 4s
+		boolean isSiegeActive = (this.myMap.getSiegeGolemPos() != null);
 		
 		State previousState = this.currentState;
-		if (visibleGolemNode != null || isTrailHot) {
+		if (visibleGolemNode != null || isTrailHot || isSiegeActive) {
 			this.currentState = State.HUNT;
 		} else {
 			this.currentState = State.EXPLORE;
@@ -336,7 +337,38 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			}
 		}
 
-		// Fallback random walk for hunt if totally stuck
+		// --- Fallback: Explore open nodes closest to the Golem ---
+		if (nextNodeId == null) {
+			String golemPosToUse = actualGolemPos;
+			if (golemPosToUse == null && !allStenches.isEmpty()) {
+				long bestTs2 = -1;
+				for (String n : allStenches) {
+					long ts = this.myMap.getStenchTimestamp(n);
+					if (ts > bestTs2) {
+						bestTs2 = ts;
+						golemPosToUse = n;
+					}
+				}
+			}
+
+			if (golemPosToUse != null) {
+				List<String> openNodes = this.myMap.getOpenNodes();
+				int minGolemDist = Integer.MAX_VALUE;
+
+				for (String on : openNodes) {
+					List<String> pathFromGolem = this.myMap.getShortestPath(golemPosToUse, on);
+					if (pathFromGolem != null) {
+						List<String> pathToOpen = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), on, obstacles);
+						if (pathToOpen != null && !pathToOpen.isEmpty() && pathFromGolem.size() < minGolemDist) {
+							minGolemDist = pathFromGolem.size();
+							nextNodeId = pathToOpen.get(0);
+						}
+					}
+				}
+			}
+		}
+
+		// --- Ultimate Fallback: Random Walk ---
 		if (nextNodeId == null) {
 			List<String> validPatrolNodes = new ArrayList<>();
 			for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {

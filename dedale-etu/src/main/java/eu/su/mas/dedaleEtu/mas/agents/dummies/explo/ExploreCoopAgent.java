@@ -6,9 +6,11 @@ import java.util.List;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedale.mas.agent.behaviours.platformManagment.*;
 
-import eu.su.mas.dedaleEtu.mas.behaviours.ExploCoopBehaviour;
+
 import eu.su.mas.dedaleEtu.mas.behaviours.ShareMapFSMBehaviour;
+import eu.su.mas.dedaleEtu.mas.behaviours.OpportunisticBehaviour;
 import eu.su.mas.dedaleEtu.mas.behaviours.ReceiveGolemTrailBehaviour;
+import eu.su.mas.dedaleEtu.mas.behaviours.ReceiveSiegeStatusBehaviour;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation;
 
 import jade.core.behaviours.Behaviour;
@@ -82,10 +84,10 @@ public class ExploreCoopAgent extends AbstractDedaleAgent {
 		ReceiveGolemTrailBehaviour receiveTrailBehaviour = new ReceiveGolemTrailBehaviour(this, this.myMap);
 		lb.add(receiveTrailBehaviour);
 		
-		eu.su.mas.dedaleEtu.mas.behaviours.ReceiveSiegeStatusBehaviour receiveSiegeBehaviour = new eu.su.mas.dedaleEtu.mas.behaviours.ReceiveSiegeStatusBehaviour(this, this.myMap);
+		ReceiveSiegeStatusBehaviour receiveSiegeBehaviour = new ReceiveSiegeStatusBehaviour(this, this.myMap);
 		lb.add(receiveSiegeBehaviour);
 
-		lb.add(new ExploCoopBehaviour(this, this.myMap, shareBehaviour, receiveTrailBehaviour, list_agentNames));
+		lb.add(new OpportunisticBehaviour(this, this.myMap, shareBehaviour, receiveTrailBehaviour, receiveSiegeBehaviour, list_agentNames));
 
 		addBehaviour(new StartMyBehaviours(this, lb));
 

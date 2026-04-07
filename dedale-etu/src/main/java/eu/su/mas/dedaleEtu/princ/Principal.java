@@ -8,6 +8,9 @@ import java.util.Objects;
 import eu.su.mas.dedale.env.EntityCharacteristics;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedale.mas.agents.GateKeeperAgent;
+import eu.su.mas.dedaleEtu.mas.agents.dummies.explo.ExploreCoopAgent;
+import eu.su.mas.dedaleEtu.mas.agents.dummies.explo.ExploreSoloAgent;
+import jade.core.Profile;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
@@ -268,6 +271,7 @@ public class Principal {
 	private static List<AgentController> createAgents(HashMap<String, ContainerController> containerList) {
 		System.out.println("Launching agents...");
 		ContainerController c;
+		String agentName;
 		List<AgentController> agentList = new ArrayList<AgentController>();
 
 		if (ConfigurationFile.COMPUTERisMAIN) {
@@ -277,7 +281,7 @@ public class Principal {
 			 */
 			c = containerList.get(ConfigurationFile.LOCAL_CONTAINER_NAME);
 			Assert.assertNotNull("This container does not exist", c);
-			String agentName = ConfigurationFile.DEFAULT_GATEKEEPER_NAME;
+			agentName = ConfigurationFile.DEFAULT_GATEKEEPER_NAME;
 			try {
 				Object[] objtab = new Object[] { ConfigurationFile.ENVIRONMENT_TYPE, ConfigurationFile.GENERATOR_TYPE,
 						ConfigurationFile.INSTANCE_TOPOLOGY, ConfigurationFile.INSTANCE_CONFIGURATION_ELEMENTS,
@@ -687,4 +691,5 @@ public class Principal {
 	// }
 
 }
+
 

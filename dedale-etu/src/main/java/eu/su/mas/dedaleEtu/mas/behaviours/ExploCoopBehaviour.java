@@ -44,6 +44,7 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
 	private ShareMapFSMBehaviour shareBehaviour;
 
 	private ReceiveGolemTrailBehaviour receiveTrailBehaviour;
+	private ReceiveSiegeStatusBehaviour receiveSiegeBehaviour;
 
 	private List<String> agentNames;
 
@@ -55,16 +56,19 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
 	 * @param shareBehaviour        reference to the ShareMapFSMBehaviour (for lazy
 	 *                              map init)
 	 * @param receiveTrailBehaviour reference to receive behaviour
+	 * @param receiveSiegeBehaviour reference to receive siege behaviour
 	 * @param agentNames            List of known agents to pass to HuntBehaviour
 	 *                              for gossip
 	 */
 	public ExploCoopBehaviour(final AbstractDedaleAgent myagent, MapRepresentation myMap,
 			ShareMapFSMBehaviour shareBehaviour, ReceiveGolemTrailBehaviour receiveTrailBehaviour,
+			ReceiveSiegeStatusBehaviour receiveSiegeBehaviour,
 			List<String> agentNames) {
 		super(myagent);
 		this.myMap = myMap;
 		this.shareBehaviour = shareBehaviour;
 		this.receiveTrailBehaviour = receiveTrailBehaviour;
+		this.receiveSiegeBehaviour = receiveSiegeBehaviour;
 		this.agentNames = agentNames;
 	}
 
@@ -79,6 +83,9 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
 			}
 			if (this.receiveTrailBehaviour != null) {
 				this.receiveTrailBehaviour.setMap(this.myMap);
+			}
+			if (this.receiveSiegeBehaviour != null) {
+				this.receiveSiegeBehaviour.setMap(this.myMap);
 			}
 		}
 

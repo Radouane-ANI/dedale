@@ -593,9 +593,12 @@ public class Principal {
 		List<EntityCharacteristics> entities = AbstractDedaleAgent.loadEntitiesCharacteristicsFromJson(
 				ConfigurationFile.DEFAULT_AGENTS_CLASSPATH, ConfigurationFile.INSTANCE_CONFIGURATION_ENTITIES);
 
-		List<String> allAgentNames = new ArrayList<String>();
+		// Build a list of friendly agent names only (exclude Wumpus/Golem entities)
+		List<String> friendlyAgentNames = new ArrayList<String>();
 		for (EntityCharacteristics e : entities) {
-			allAgentNames.add(e.getAgentName());
+			if (e.getMyEntityType() != eu.su.mas.dedale.env.EntityType.WUMPUS) {
+				friendlyAgentNames.add(e.getAgentName());
+			}
 		}
 
 		for (EntityCharacteristics e : entities) {
@@ -605,7 +608,7 @@ public class Principal {
 			params.add(e);
 			params.add(ConfigurationFile.DEFAULT_GATEKEEPER_NAME);
 
-			for (String name : allAgentNames) {
+			for (String name : friendlyAgentNames) {
 				if (!name.equals(e.getAgentName())) {
 					params.add(name);
 				}

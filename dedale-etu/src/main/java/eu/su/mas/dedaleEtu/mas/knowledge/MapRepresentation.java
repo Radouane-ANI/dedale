@@ -215,11 +215,17 @@ public class MapRepresentation implements Serializable {
 	public synchronized List<String> getShortestPath(String idFrom, String idTo) {
 		List<String> shortestPath = new ArrayList<String>();
 
+		Node sourceNode = g.getNode(idFrom);
+		Node destNode = g.getNode(idTo);
+		if (sourceNode == null || destNode == null) {
+			return null;
+		}
+
 		Dijkstra dijkstra = new Dijkstra();// number of edge
 		dijkstra.init(g);
-		dijkstra.setSource(g.getNode(idFrom));
+		dijkstra.setSource(sourceNode);
 		dijkstra.compute();// compute the distance to all nodes from idFrom
-		List<Node> path = dijkstra.getPath(g.getNode(idTo)).getNodePath(); // the shortest path from idFrom to idTo
+		List<Node> path = dijkstra.getPath(destNode).getNodePath(); // the shortest path from idFrom to idTo
 		Iterator<Node> iter = path.iterator();
 		while (iter.hasNext()) {
 			shortestPath.add(iter.next().getId());
@@ -236,6 +242,12 @@ public class MapRepresentation implements Serializable {
 	public synchronized List<String> getShortestPathAvoiding(String idFrom, String idTo, List<String> nodesToAvoid) {
 		List<String> shortestPath = new ArrayList<String>();
 
+		Node sourceNode = g.getNode(idFrom);
+		Node destNode = g.getNode(idTo);
+		if (sourceNode == null || destNode == null) {
+			return null;
+		}
+
 		// GraphStream doesn't inherently penalize nodes, so we penalize edges leading to/from obstacles.
 		try {
 			// Temporarily assign high weight to edges connected to avoided nodes
@@ -250,12 +262,11 @@ public class MapRepresentation implements Serializable {
 
 			Dijkstra dijkstra = new Dijkstra(Dijkstra.Element.EDGE, "result", "weight");
 			dijkstra.init(g);
-			dijkstra.setSource(g.getNode(idFrom));
+			dijkstra.setSource(sourceNode);
 			dijkstra.compute();
 
-			Node destination = g.getNode(idTo);
-			if (destination != null) {
-				List<Node> path = dijkstra.getPath(destination).getNodePath();
+			if (destNode != null) {
+				List<Node> path = dijkstra.getPath(destNode).getNodePath();
 				Iterator<Node> iter = path.iterator();
 				while (iter.hasNext()) {
 					shortestPath.add(iter.next().getId());

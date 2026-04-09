@@ -231,7 +231,6 @@ public class ShareMapFSMBehaviour extends FSMBehaviour {
         }
 
         private boolean agentProche() {
-            try {
                 List<Couple<Location, List<Couple<Observation, String>>>> lobs = ((AbstractDedaleAgent) myAgent)
                         .observe();
                 if (lobs == null)
@@ -243,9 +242,6 @@ public class ShareMapFSMBehaviour extends FSMBehaviour {
                         }
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             return false;
         }
     }

@@ -36,6 +36,7 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 
 	private boolean finishedExploration = false;
 	private int consecutiveWaitTicks = 0;
+	private String lastPosition = null; // [FIX-4] Pour detection de deadlock
 
 	public OpportunisticBehaviour(final AbstractDedaleAgent myagent, MapRepresentation myMap,
 			ShareMapFSMBehaviour shareBehaviour, ReceiveGolemTrailBehaviour receiveTrailBehaviour,
@@ -136,7 +137,8 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 		}
 
 		boolean isTrailHot = (maxTimestamp != -1 && (currentTimestamp - maxTimestamp) < 4000); // Trail freshness threshold 4s
-		boolean isSiegeActive = (this.myMap.getSiegeGolemPos() != null);
+		// [FIX-2] Ne pas maintenir le siege s'il n'y a aucune odeur
+		boolean isSiegeActive = (this.myMap.getSiegeGolemPos() != null && !allStenches.isEmpty());
 		
 		State previousState = this.currentState;
 		if (visibleGolemNode != null || isTrailHot || isSiegeActive) {
@@ -158,9 +160,38 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			targetNodeId = computeExploreTarget(myPosition, lobs);
 		}
 
-		// --- 4. EXECUTE MOVEMENT ---
+		// --- 4. DEADLOCK DETECTION --- [FIX-4]
+		String myPosId = myPosition.getLocationId();
+		if (myPosId.equals(this.lastPosition)) {
+			this.consecutiveWaitTicks++;
+		} else {
+			this.consecutiveWaitTicks = 0;
+		}
+		this.lastPosition = myPosId;
+
+		// Si bloque depuis 3+ ticks, forcer un mouvement aleatoire pour casser le deadlock
+		// MAIS PAS si l'agent tient volontairement sa position de siege
+		boolean holdingSiegePosition = (this.currentState == State.HUNT 
+				&& targetNodeId != null && targetNodeId.equals(myPosId));
+
+		if (this.consecutiveWaitTicks >= 3 && !holdingSiegePosition) {
+			List<String> escapeNodes = new ArrayList<>();
+			for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
+				String nodeId = obs.getLeft().getLocationId();
+				if (!nodeId.equals(myPosId)) {
+					escapeNodes.add(nodeId);
+				}
+			}
+			if (!escapeNodes.isEmpty()) {
+				java.util.Collections.shuffle(escapeNodes);
+				targetNodeId = escapeNodes.get(0);
+				this.consecutiveWaitTicks = 0;
+			}
+		}
+
+		// --- 5. EXECUTE MOVEMENT ---
 		if (targetNodeId != null) {
-			if (!targetNodeId.equals(myPosition.getLocationId())) {
+			if (!targetNodeId.equals(myPosId)) {
 				((AbstractDedaleAgent) this.myAgent).moveTo(new GsLocation(targetNodeId));
 			}
 		}
@@ -244,9 +275,14 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 				}
 			}
 			Set<String> possibleLocs = this.myMap.getGolemPossibleLocations(freshestStenches);
+			// [FIX-1] Exclure notre propre position : le Golem ne peut pas etre sur nous
+			if (possibleLocs != null) {
+				possibleLocs.remove(myPosition.getLocationId());
+			}
 			if (possibleLocs != null && possibleLocs.size() == 1) {
 				actualGolemPos = possibleLocs.iterator().next();
-			} else if (this.myMap.getSiegeGolemPos() != null) {
+			} else if (!allStenches.isEmpty() && this.myMap.getSiegeGolemPos() != null) {
+				// [FIX-2] Ne faire confiance au siege QUE si on a encore de l'odeur
 				actualGolemPos = this.myMap.getSiegeGolemPos();
 			}
 		}
@@ -256,9 +292,6 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			int A = (this.agentNames != null ? this.agentNames.size() : 0) + 1;
 			int D = neighbors.size();
 			
-			// Si on est opportuniste dans l'inconnu, D est potentiellement plus elevé.
-			// Toutefois, on travaille avec les infos connues.
-			
 			// Si on est en position
 			boolean inPosition = neighbors.contains(myPosition.getLocationId()) || myPosition.getLocationId().equals(actualGolemPos);
 			
@@ -266,12 +299,22 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			holes.removeAll(obstacles);
 			holes.remove(myPosition.getLocationId());
 
-			if (inPosition && allyVisible) {
+			// [FIX-5] Ne broadcaster le siege QUE si on a une preuve directe
+			boolean confirmedByEvidence = (visibleGolemNode != null || !allStenches.isEmpty());
+
+			if (inPosition && allyVisible && confirmedByEvidence) {
 				broadcastSiegeStatus(actualGolemPos, String.join(",", holes));
 			}
 
-			if (inPosition && !myPosition.getLocationId().equals(actualGolemPos)) {
-				return myPosition.getLocationId(); // Restons ici pour bloquer
+			// [FIX-3] Determiner si on a des allies pour le siege
+			boolean hasAllies = allyVisible || !this.myMap.getSiegeStaffLocations().isEmpty();
+
+			if (inPosition && !myPosition.getLocationId().equals(actualGolemPos) && hasAllies && confirmedByEvidence) {
+				// Siege multi-agents confirme : on tient la porte
+				return myPosition.getLocationId();
+			} else if (inPosition && !myPosition.getLocationId().equals(actualGolemPos) && !hasAllies) {
+				// [FIX-3] Agent SEUL en position : ne pas rester plante, foncer sur le Golem
+				targetNodeId = actualGolemPos;
 			} else {
 				String bestHole = null;
 				int minDist = Integer.MAX_VALUE;

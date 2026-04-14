@@ -82,6 +82,7 @@ public class MapRepresentation implements Serializable {
 
 	// --- Siege Protocol Data ---
 	private String siegeGolemPos = null;
+	private String siegeGolemName = null;
 	private long siegeTimestamp = 0;
 	private HashMap<String, String> siegeStaff = new HashMap<>();
 	private HashMap<String, Long> siegeStaffTimestamps = new HashMap<>();
@@ -248,7 +249,8 @@ public class MapRepresentation implements Serializable {
 			return null;
 		}
 
-		// GraphStream doesn't inherently penalize nodes, so we penalize edges leading to/from obstacles.
+		// GraphStream doesn't inherently penalize nodes, so we penalize edges leading
+		// to/from obstacles.
 		try {
 			// Temporarily assign high weight to edges connected to avoided nodes
 			if (nodesToAvoid != null) {
@@ -273,7 +275,7 @@ public class MapRepresentation implements Serializable {
 				}
 			}
 			dijkstra.clear();
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -291,8 +293,10 @@ public class MapRepresentation implements Serializable {
 		if (shortestPath.isEmpty()) {
 			return null;
 		} else {
-			// Vérification stricte : si le chemin physiquement trouvé passe par un obstacle, on le coupe.
-			// (Car Dijkstra avec simple pénalité le renvoyait quand même en absence d'alternative)
+			// Vérification stricte : si le chemin physiquement trouvé passe par un
+			// obstacle, on le coupe.
+			// (Car Dijkstra avec simple pénalité le renvoyait quand même en absence
+			// d'alternative)
 			if (nodesToAvoid != null) {
 				for (int i = 1; i < shortestPath.size() - 1; i++) {
 					if (nodesToAvoid.contains(shortestPath.get(i))) {
@@ -300,7 +304,8 @@ public class MapRepresentation implements Serializable {
 					}
 				}
 				// On vérifie aussi le tout premier pas
-				if (shortestPath.size() > 1 && nodesToAvoid.contains(shortestPath.get(1)) && !shortestPath.get(1).equals(idTo)) {
+				if (shortestPath.size() > 1 && nodesToAvoid.contains(shortestPath.get(1))
+						&& !shortestPath.get(1).equals(idTo)) {
 					return null;
 				}
 			}
@@ -614,7 +619,7 @@ public class MapRepresentation implements Serializable {
 	/**
 	 * Triangulation: Returns the set of possible Golem locations
 	 * by computing the intersection of the neighborhoods of the given stench nodes.
-	 * Since a Golem leaves a stench at distance 1, it must be in the neighborhood 
+	 * Since a Golem leaves a stench at distance 1, it must be in the neighborhood
 	 * of EVERY node where a stench is currently perceived.
 	 */
 	public synchronized Set<String> getGolemPossibleLocations(Set<String> stenchNodesId) {
@@ -630,7 +635,7 @@ public class MapRepresentation implements Serializable {
 				Set<String> neighbors = n.neighborNodes()
 						.map(Node::getId)
 						.collect(Collectors.toSet());
-				
+
 				if (possiblePositions == null) {
 					possiblePositions = neighbors;
 				} else {
@@ -657,9 +662,11 @@ public class MapRepresentation implements Serializable {
 	/**
 	 * Siege Coordination: Update the latest known state of the Golem siege.
 	 */
-	public synchronized void updateSiegeStatus(String golemPos, String agentName, String agentPos, Set<String> holes, long timestamp) {
+	public synchronized void updateSiegeStatus(String golemPos, String golemName, String agentName, String agentPos,
+			Set<String> holes, long timestamp) {
 		if (timestamp >= this.siegeTimestamp && golemPos != null) {
 			this.siegeGolemPos = golemPos;
+			this.siegeGolemName = golemName;
 			this.siegeTimestamp = timestamp;
 		}
 		if (holes != null) {
@@ -672,7 +679,8 @@ public class MapRepresentation implements Serializable {
 	}
 
 	/**
-	 * Clean old siege staff positions to prevent indefinitely avoiding ghost allies.
+	 * Clean old siege staff positions to prevent indefinitely avoiding ghost
+	 * allies.
 	 */
 	public synchronized void cleanOldSiegeData(long maxAgeMillis) {
 		long currentTime = System.currentTimeMillis();
@@ -687,16 +695,21 @@ public class MapRepresentation implements Serializable {
 			siegeStaff.remove(agent);
 			siegeStaffTimestamps.remove(agent);
 		}
-		
+
 		// If the siege itself is too old, clear it
 		if (currentTime - this.siegeTimestamp > maxAgeMillis + 2000) {
 			this.siegeGolemPos = null;
+			this.siegeGolemName = null;
 			this.siegeHoles.clear();
 		}
 	}
 
 	public String getSiegeGolemPos() {
 		return siegeGolemPos;
+	}
+
+	public String getSiegeGolemName() {
+		return siegeGolemName;
 	}
 
 	public Set<String> getSiegeHoles() {
@@ -706,6 +719,5 @@ public class MapRepresentation implements Serializable {
 	public List<String> getSiegeStaffLocations() {
 		return new ArrayList<>(siegeStaff.values());
 	}
-
 
 }

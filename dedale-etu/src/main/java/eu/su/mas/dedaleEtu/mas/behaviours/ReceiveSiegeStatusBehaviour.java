@@ -37,14 +37,19 @@ public class ReceiveSiegeStatusBehaviour extends SimpleBehaviour {
 		if (msg != null) {
 			String content = msg.getContent();
 			if (content != null) {
-				// Format attendu: GolemPos;SenderName:SenderPos;Hole1,Hole2;Timestamp
+				// Format attendu: GolemPos;GolemName;SenderName:SenderPos;Hole1,Hole2;Timestamp
 				String[] parts = content.split(";");
-				if (parts.length >= 4) {
+				if (parts.length >= 5) {
 					try {
 						String golemPos = parts[0];
-						if(golemPos.equals("null")) golemPos = null;
-						
-						String senderInfo = parts[1];
+						if (golemPos.equals("null"))
+							golemPos = null;
+
+						String golemName = parts[1];
+						if (golemName.equals("null"))
+							golemName = null;
+
+						String senderInfo = parts[2];
 						String senderName = null;
 						String senderPos = null;
 						if (senderInfo.contains(":")) {
@@ -54,15 +59,16 @@ public class ReceiveSiegeStatusBehaviour extends SimpleBehaviour {
 						}
 
 						Set<String> holes = new HashSet<>();
-						if (!parts[2].isEmpty() && !parts[2].equals("null")) {
-							holes.addAll(Arrays.asList(parts[2].split(",")));
+						if (!parts[3].isEmpty() && !parts[3].equals("null")) {
+							holes.addAll(Arrays.asList(parts[3].split(",")));
 						}
 
-						long timestamp = Long.parseLong(parts[3]);
+						long timestamp = Long.parseLong(parts[4]);
 
-						this.myMap.updateSiegeStatus(golemPos, senderName, senderPos, holes, timestamp);
+						this.myMap.updateSiegeStatus(golemPos, golemName, senderName, senderPos, holes, timestamp);
 					} catch (Exception e) {
-						System.err.println("ReceiveSiegeStatusBehaviour: Error parsing SIEGE_STATUS msg content: " + content);
+						System.err.println(
+								"ReceiveSiegeStatusBehaviour: Error parsing SIEGE_STATUS msg content: " + content);
 						e.printStackTrace();
 					}
 				}

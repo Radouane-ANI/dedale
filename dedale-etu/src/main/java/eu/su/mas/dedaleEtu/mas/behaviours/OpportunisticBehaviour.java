@@ -131,8 +131,8 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 		}
 
 		// Clean old stenches and siege status
-		this.myMap.cleanOldStenches(5000); // 5 sec decay
-		this.myMap.cleanOldSiegeData(3000); // 3 sec decay
+		this.myMap.cleanOldStenches(1500); // 1.5 sec decay (3 ticks max)
+		this.myMap.cleanOldSiegeData(2000); // 2 sec decay
 
 		// Check if exploration is officially done globally
 		if (!finishedExploration && !this.myMap.hasOpenNode()) {
@@ -370,12 +370,12 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			// [FIX-3] Determiner si on a des allies pour le siege
 			boolean hasAllies = allyVisible || !this.myMap.getSiegeStaffLocations().isEmpty();
 
-			if (inPosition && !myPosition.getLocationId().equals(actualGolemPos) && hasAllies && confirmedByEvidence) {
-				// Siege multi-agents confirme : on tient la porte
+			// On s'assure que la position actuelle est bien validée par la vue ou un siège actif
+			boolean isGolemConfirmed = (actualGolemPos.equals(visibleGolemNode) || actualGolemPos.equals(siegeGolemPos));
+
+			if (inPosition && !myPosition.getLocationId().equals(actualGolemPos) && isGolemConfirmed) {
+				// Là, on est sûr de tenir une vraie porte !
 				return myPosition.getLocationId();
-			} else if (inPosition && !myPosition.getLocationId().equals(actualGolemPos) && !hasAllies) {
-				// [FIX-3] Agent SEUL en position : ne pas rester plante, foncer sur le Golem
-				targetNodeId = actualGolemPos;
 			} else {
 				String bestHole = null;
 				int minDist = Integer.MAX_VALUE;
@@ -389,9 +389,17 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 				List<String> obstaclesPourContournement = new ArrayList<>(obstacles);
 				obstaclesPourContournement.add(actualGolemPos);
 
+				// Mélanger légèrement pour éviter que 3 agents à égale distance 
+				// choisissent systématiquement le même nœud dans la liste triée.
+				java.util.Collections.shuffle(sortedHoles); 
+
 				for (String hole : sortedHoles) {
+					// Si un allié est déjà sur ce trou (vu dans les obstacles), on l'ignore
+					if (obstacles.contains(hole)) continue;
+
 					List<String> path = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), hole,
 							obstaclesPourContournement);
+					
 					if (path != null && path.size() < minDist) {
 						minDist = path.size();
 						bestHole = hole;
@@ -411,20 +419,36 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			long bestTs = -1;
 
 			for (String loc : allStenches) {
-				if (loc.equals(myPosition.getLocationId()))
-					continue;
-				if (obstacles.contains(loc))
-					continue;
+				if (loc.equals(myPosition.getLocationId()) || obstacles.contains(loc)) continue;
 
 				long ts = this.myMap.getStenchTimestamp(loc);
-				List<String> path = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), loc, obstacles);
+				
+				// Au lieu de cibler 'loc' (là où le golem était), on regarde ses voisins
+				List<String> locNeighbors = this.myMap.getNeighbors(loc);
+				for (String potentialNextStep : locNeighbors) {
+					if (allStenches.contains(potentialNextStep)) continue; // Le Golem vient sûrement de là
+					
+					List<String> path = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), potentialNextStep, obstacles);
 
-				if (path != null && !path.isEmpty()) {
-					if (ts > bestTs || (ts == bestTs && path.size() < minDist)) {
-						bestTs = ts;
-						minDist = path.size();
-						targetNodeId = loc;
-						bestPath = path;
+					if (path != null && !path.isEmpty()) {
+						if (ts > bestTs || (ts == bestTs && path.size() < minDist)) {
+							bestTs = ts;
+							minDist = path.size();
+							targetNodeId = potentialNextStep; // On cible devant lui !
+							bestPath = path;
+						}
+					} else if (potentialNextStep.equals(myPosition.getLocationId())) {
+						long ageOfStench = currentTimestamp - ts;
+						
+						// On ne fait l'embuscade que si l'odeur a moins d'une seconde (trace toute fraîche)
+						if (ageOfStench < 1000) {
+							if (ts > bestTs || (ts == bestTs && 0 < minDist)) {
+								bestTs = ts;
+								minDist = 0;
+								targetNodeId = potentialNextStep;
+								bestPath = new ArrayList<>();
+							}
+						}
 					}
 				}
 			}

@@ -515,45 +515,148 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			
 			if (n1 != null) {
 				List<String> locNeighbors = this.myMap.getNeighbors(n1);
-				
+
 				// Sécurisation du Gradient d'Odeur
 				boolean isTrajectoryValid = (n2 != null && locNeighbors.contains(n2));
-				
-				for (String potentialNextStep : locNeighbors) {
-					// Exclure formellement N2 (il vient de là) et les odeurs connues (déjà visitées)
-					if ((isTrajectoryValid && potentialNextStep.equals(n2)) || allStenches.contains(potentialNextStep))
-						continue;
 
-					List<String> path = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(),
-							potentialNextStep, obstacles);
-					
-					int myDist = (path != null) ? path.size() : Integer.MAX_VALUE;
-					
-					if (claimedTargets.containsKey(potentialNextStep) && myDist != Integer.MAX_VALUE) {
-						Couple<Integer, String> claim = claimedTargets.get(potentialNextStep);
-						if (claim.getLeft() < myDist) continue;
-						if (claim.getLeft() == myDist && this.myAgent.getLocalName().compareTo(claim.getRight()) > 0) continue;
+				// NOUVEAU : Suis-je le Rabatteur (Beater) ?
+				// Vérifier si un allié a déjà "claim" N1 ou une distance très courte vers N1
+				boolean amITheBeater = true;
+				if (claimedTargets.containsKey(n1)) {
+					Couple<Integer, String> claim = claimedTargets.get(n1);
+					List<String> myPathToN1 = this.myMap.getShortestPath(myPosition.getLocationId(), n1);
+					int myDistToN1 = (myPathToN1 != null) ? myPathToN1.size() : Integer.MAX_VALUE;
+
+					// Si un allié est plus proche de l'odeur ou à distance égale avec une meilleure
+					// priorité
+					if (claim.getLeft() < myDistToN1 || (claim.getLeft() == myDistToN1
+							&& this.myAgent.getLocalName().compareTo(claim.getRight()) > 0)) {
+						amITheBeater = false;
 					}
+				}
 
-					if (path != null && !path.isEmpty()) {
-						if (myDist < minDist) {
-							minDist = myDist;
-							targetNodeId = potentialNextStep;
-							bestPath = path;
+				if (amITheBeater) {
+					// --- COMPORTEMENT RABATTEUR (Le code existant) ---
+					// Je suis le plus proche, je pousse le Golem dans le dos en ciblant le voisin
+					// direct de n1
+					for (String potentialNextStep : locNeighbors) {
+						// Exclure formellement N2 (il vient de là) et les odeurs connues (déjà
+						// visitées)
+						if ((isTrajectoryValid && potentialNextStep.equals(n2))
+								|| allStenches.contains(potentialNextStep))
+							continue;
+
+						List<String> path = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(),
+								potentialNextStep, obstacles);
+
+						int myDist = (path != null) ? path.size() : Integer.MAX_VALUE;
+
+						if (claimedTargets.containsKey(potentialNextStep) && myDist != Integer.MAX_VALUE) {
+							Couple<Integer, String> claim = claimedTargets.get(potentialNextStep);
+							if (claim.getLeft() < myDist)
+								continue;
+							if (claim.getLeft() == myDist
+									&& this.myAgent.getLocalName().compareTo(claim.getRight()) > 0)
+								continue;
 						}
-					} else if (potentialNextStep.equals(myPosition.getLocationId())) {
-						long ageOfStench = currentTimestamp - ts1;
-						if (ageOfStench < 1000) {
-							if (0 < minDist) {
-								minDist = 0;
+
+						if (path != null && !path.isEmpty()) {
+							if (myDist < minDist) {
+								minDist = myDist;
 								targetNodeId = potentialNextStep;
-								bestPath = new ArrayList<>();
+								bestPath = path;
+							}
+						} else if (potentialNextStep.equals(myPosition.getLocationId())) {
+							long ageOfStench = currentTimestamp - ts1;
+							if (ageOfStench < 1000) {
+								if (0 < minDist) {
+									minDist = 0;
+									targetNodeId = potentialNextStep;
+									bestPath = new ArrayList<>();
+								}
 							}
 						}
 					}
+				} else {
+					// --- COMPORTEMENT INTERCEPTEUR (L'anticipation dynamique) ---
+
+					// 1. Le Mur de Feu Assoupli :
+					// Sur un graphe dense, éviter TOUTES les odeurs bloque le pathfinding.
+					// On évite seulement la position immédiate du Golem (n1) et d'où il vient (n2).
+					List<String> avoidNodes = new ArrayList<>(obstacles);
+					avoidNodes.add(n1);
+					if (n2 != null)
+						avoidNodes.add(n2);
+
+					boolean interceptionFound = false;
+
+					// 2. Recherche d'un point d'interception faisable
+					for (int depth = 2; depth <= 5; depth++) {
+						String interceptionTarget = predictGolemInterceptionPoint(n1,
+								n2 != null ? n2 : myPosition.getLocationId(), depth);
+
+						if (interceptionTarget != null && !interceptionTarget.equals(myPosition.getLocationId())) {
+							List<String> path = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(),
+									interceptionTarget, avoidNodes);
+
+							if (path != null && !path.isEmpty()) {
+								// Test de Faisabilité : Arriverons-nous avant lui ?
+								if (path.size() <= depth + 1) {
+									targetNodeId = interceptionTarget;
+									bestPath = path;
+									interceptionFound = true;
+									break;
+								}
+							}
+						}
+					}
+
+					// 3. Fallback Stratégique (LA CORRECTION MAJEURE)
+					// 3. Fallback Stratégique (LA CORRECTION ANTI-EMBOUTEILLAGE)
+					if (!interceptionFound) {
+						// Impossible de faire une interception parfaite loin devant.
+						// Au lieu de tous foncer sur n1 et de s'embouteiller dans le même couloir,
+						// on va chercher à verrouiller le périmètre IMMEDIAT de n1 (le filet de pêche).
+
+						List<String> n1Neighbors = this.myMap.getNeighbors(n1);
+						List<String> availablePerimeter = new ArrayList<>();
+
+						for (String v : n1Neighbors) {
+							// On cherche une case adjacente au Golem qui n'est pas un obstacle,
+							// qui n'est pas sa provenance (n2), et SURTOUT qu'un collègue n'a pas déjà "claim"
+							if (!obstacles.contains(v) && !v.equals(n2)) {
+								if (!claimedTargets.containsKey(v)) {
+									availablePerimeter.add(v);
+								}
+							}
+						}
+
+						if (!availablePerimeter.isEmpty()) {
+							// On choisit la place sur le périmètre la plus rapide à atteindre pour moi
+							int minDistToPerim = Integer.MAX_VALUE;
+							for (String p : availablePerimeter) {
+								List<String> pPath = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), p,
+										obstacles);
+								if (pPath != null && pPath.size() < minDistToPerim) {
+									minDistToPerim = pPath.size();
+									targetNodeId = p;
+									bestPath = pPath;
+								}
+							}
+						}
+
+						// Si tout le filet est déjà pris ou physiquement inaccessible pour le moment,
+						// on se contente de se rapprocher de n1 globalement (soutien lointain)
+						if (targetNodeId == null) {
+							targetNodeId = n1;
+							bestPath = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), n1, obstacles);
+						}
+					}
 				}
+
 				// Si cul-de-sac parfait (n1 n'a que n2 comme voisin), on cible n1 par défaut
-				if (targetNodeId == null && !obstacles.contains(n1)) targetNodeId = n1;
+				if (targetNodeId == null && !obstacles.contains(n1))
+					targetNodeId = n1;
 			}
 		}
 
@@ -704,6 +807,48 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			}
 		}
 		return bestEnemy;
+	}
+
+	/**
+	 * Projette la position du Golem N steps dans le futur en supposant qu'il fuit
+	 * l'odeur/les agents.
+	 * 
+	 * @param currentNode  Position actuelle (ou odeur la plus fraîche)
+	 * @param previousNode Position précédente du Golem
+	 * @param depthAhead   Nombre de pas de projection
+	 * @return Le nœud prédit
+	 */
+	private String predictGolemInterceptionPoint(String currentNode, String previousNode, int depthAhead) {
+		String predictedNode = currentNode;
+		String cameFrom = previousNode;
+
+		Set<String> simulatedVisited = new HashSet<>();
+		simulatedVisited.add(cameFrom);
+		simulatedVisited.add(currentNode);
+
+		for (int i = 0; i < depthAhead; i++) {
+			List<String> neighbors = this.myMap.getNeighbors(predictedNode);
+
+			// On retire les cases d'où il vient pour forcer le mouvement vers l'avant
+			neighbors.removeAll(simulatedVisited);
+
+			if (neighbors.isEmpty()) {
+				// Cul-de-sac ou impasse topologique, le Golem s'arrêtera ici
+				break;
+			}
+
+			// Stratégie de fuite : le Golem a tendance à aller vers les zones ouvertes.
+			// On trie les voisins pour prendre celui qui a le plus de connexions (le plus
+			// grand potentiel de fuite)
+			neighbors.sort((n1, n2) -> Integer.compare(this.myMap.getNeighbors(n2).size(),
+					this.myMap.getNeighbors(n1).size()));
+
+			cameFrom = predictedNode;
+			predictedNode = neighbors.get(0); // On simule qu'il prend le chemin le plus ouvert
+			simulatedVisited.add(predictedNode);
+		}
+
+		return predictedNode;
 	}
 
 }

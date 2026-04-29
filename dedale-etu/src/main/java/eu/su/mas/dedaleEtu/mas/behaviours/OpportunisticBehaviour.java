@@ -56,7 +56,49 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 
 	@Override
 	public void onTick() {
+		initializeMapIfNeeded();
 
+		Location myPosition = ((AbstractDedaleAgent) this.myAgent).getCurrentPosition();
+		if (myPosition == null)
+			return;
+
+		long currentTimestamp = System.currentTimeMillis();
+		java.util.Map<String, Couple<Integer, Couple<Integer, String>>> claimedTargets = receiveTargetClaims(currentTimestamp);
+
+		// --- 1. OBSERVATION & MAPPING (Unified) ---
+		List<Couple<Location, List<Couple<Observation, String>>>> lobs = ((AbstractDedaleAgent) this.myAgent).observe();
+
+		int unattendedStenchesCount = countUnattendedStenches(lobs, myPosition);
+
+		updateMapAndClean(myPosition, lobs, currentTimestamp);
+
+		ObservationData obsData = extractObservationData(myPosition, lobs);
+
+		// --- 2. THE BRAIN: DYNAMIC STATE TOGGLE ---
+		long maxTimestamp = calculateMaxStenchTimestamp();
+		updateCurrentState(obsData.visibleGolemNode, currentTimestamp, maxTimestamp);
+
+		// --- 3. MOVEMENT DECISION ---
+		String targetNodeId = null;
+		if (this.currentState == State.HUNT) {
+			Set<String> allStenches = this.myMap.getStenchNodes();
+			targetNodeId = computeHuntTarget(myPosition, lobs, obsData.obstacles, obsData.visibleGolemNode,
+					obsData.visibleGolemName, allStenches, currentTimestamp, maxTimestamp, obsData.allyVisible,
+					claimedTargets, unattendedStenchesCount);
+		} else {
+			targetNodeId = computeExploreTarget(myPosition, lobs);
+		}
+
+		// --- 4. DEADLOCK DETECTION --- [FIX-4]
+		String myPosId = myPosition.getLocationId();
+		updateWaitTicks(myPosId);
+		targetNodeId = resolveDeadlockIfNeeded(myPosId, targetNodeId, lobs);
+
+		// --- 5. EXECUTE MOVEMENT ---
+		executeMovement(myPosId, targetNodeId, unattendedStenchesCount);
+	}
+
+	private void initializeMapIfNeeded() {
 		if (this.myMap == null) {
 			this.myMap = new MapRepresentation(this.myAgent.getLocalName());
 			if (this.shareBehaviour != null)
@@ -66,12 +108,9 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			if (this.receiveSiegeBehaviour != null)
 				this.receiveSiegeBehaviour.setMap(this.myMap);
 		}
+	}
 
-		Location myPosition = ((AbstractDedaleAgent) this.myAgent).getCurrentPosition();
-		if (myPosition == null)
-			return;
-
-		long currentTimestamp = System.currentTimeMillis();
+	private java.util.Map<String, Couple<Integer, Couple<Integer, String>>> receiveTargetClaims(long currentTimestamp) {
 		java.util.Map<String, Couple<Integer, Couple<Integer, String>>> claimedTargets = new java.util.HashMap<>();
 		jade.lang.acl.MessageTemplate mt = jade.lang.acl.MessageTemplate.MatchProtocol("TARGET_CLAIM");
 		ACLMessage claimMsg;
@@ -90,10 +129,10 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 				}
 			}
 		}
+		return claimedTargets;
+	}
 
-		// --- 1. OBSERVATION & MAPPING (Unified) ---
-		List<Couple<Location, List<Couple<Observation, String>>>> lobs = ((AbstractDedaleAgent) this.myAgent).observe();
-
+	private int countUnattendedStenches(List<Couple<Location, List<Couple<Observation, String>>>> lobs, Location myPosition) {
 		int unattendedStenchesCount = 0;
 		for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
 			boolean hasStench = false;
@@ -108,37 +147,63 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 					}
 				}
 			}
-			// Un nœud avec une odeur est considéré comme "sans agent" s'il n'y a pas d'allié visible dessus
-			// et que ce n'est pas ma position actuelle.
 			if (hasStench && !hasAllyVisible && !obs.getLeft().getLocationId().equals(myPosition.getLocationId())) {
 				unattendedStenchesCount++;
 			}
 		}
+		return unattendedStenchesCount;
+	}
 
+	private void updateMapAndClean(Location myPosition, List<Couple<Location, List<Couple<Observation, String>>>> lobs, long currentTimestamp) {
 		this.myMap.addNode(myPosition.getLocationId(), MapAttribute.closed);
-
-		boolean newlyExploredNodes = false;
-
-		List<String> obstacles = new ArrayList<>();
-		String visibleGolemNode = null;
-		String visibleGolemName = null;
-		boolean allyVisible = false;
 
 		for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
 			Location accessibleNode = obs.getLeft();
 			String locId = accessibleNode.getLocationId();
 
-			// Ensure open nodes and edges are mapped, even when hunting
-			boolean isNewNode = this.myMap.addNewNode(locId);
-			if (isNewNode)
-				newlyExploredNodes = true;
+			this.myMap.addNewNode(locId);
 
 			if (!myPosition.getLocationId().equals(locId)) {
 				this.myMap.addEdge(myPosition.getLocationId(), locId);
 			}
 
+			for (Couple<Observation, String> o : obs.getRight()) {
+				if (o.getLeft() == Observation.STENCH) {
+					int stenchValue = 1;
+					try {
+						stenchValue = Integer.parseInt(o.getRight());
+					} catch (NumberFormatException e) {
+					}
+					this.myMap.addStench(locId, stenchValue, currentTimestamp);
+					broadcastGolemTrail(locId, stenchValue, currentTimestamp);
+				}
+			}
+		}
+
+		this.myMap.cleanOldStenches(1500); // 1.5 sec decay (3 ticks max)
+		this.myMap.cleanOldSiegeData(2000); // 2 sec decay
+
+		if (!finishedExploration && !this.myMap.hasOpenNode()) {
+			finishedExploration = true;
+			System.out.println(this.myAgent.getLocalName() + " - Topology is completely mapped !");
+		}
+	}
+
+	private static class ObservationData {
+		List<String> obstacles = new ArrayList<>();
+		String visibleGolemNode = null;
+		String visibleGolemName = null;
+		boolean allyVisible = false;
+	}
+
+	private ObservationData extractObservationData(Location myPosition, List<Couple<Location, List<Couple<Observation, String>>>> lobs) {
+		ObservationData data = new ObservationData();
+
+		for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
+			String locId = obs.getLeft().getLocationId();
 			boolean hasAlly = false;
 			String enemy = null;
+
 			for (Couple<Observation, String> o : obs.getRight()) {
 				if (o.getLeft() == Observation.AGENTNAME) {
 					String name = o.getRight();
@@ -149,50 +214,32 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 							enemy = name;
 						}
 					}
-				} else if (o.getLeft() == Observation.STENCH) {
-					int stenchValue = 1;
-					try {
-						stenchValue = Integer.parseInt(o.getRight());
-					} catch (NumberFormatException e) {
-					}
-					this.myMap.addStench(locId, stenchValue, currentTimestamp);
-					broadcastGolemTrail(locId, stenchValue, currentTimestamp);
 				}
 			}
 
 			if (hasAlly) {
-				obstacles.add(locId);
-				allyVisible = true;
+				data.obstacles.add(locId);
+				data.allyVisible = true;
 			}
 			if (enemy != null) {
-				if (visibleGolemName == null || enemy.compareTo(visibleGolemName) < 0) {
-					visibleGolemNode = locId;
-					visibleGolemName = enemy;
+				if (data.visibleGolemName == null || enemy.compareTo(data.visibleGolemName) < 0) {
+					data.visibleGolemNode = locId;
+					data.visibleGolemName = enemy;
 				}
 			}
 		}
 
-		// Add remote siege staff to obstacles
 		List<String> siegeStaff = this.myMap.getSiegeStaffLocations();
 		for (String s : siegeStaff) {
-			if (!obstacles.contains(s) && !s.equals(myPosition.getLocationId())) {
-				obstacles.add(s);
+			if (!data.obstacles.contains(s) && !s.equals(myPosition.getLocationId())) {
+				data.obstacles.add(s);
 			}
 		}
 
-		// Clean old stenches and siege status
-		this.myMap.cleanOldStenches(1500); // 1.5 sec decay (3 ticks max)
-		this.myMap.cleanOldSiegeData(2000); // 2 sec decay
+		return data;
+	}
 
-		// Check if exploration is officially done globally
-		if (!finishedExploration && !this.myMap.hasOpenNode()) {
-			finishedExploration = true;
-			System.out.println(this.myAgent.getLocalName() + " - Topology is completely mapped !");
-		}
-
-		// --- 2. THE BRAIN: DYNAMIC STATE TOGGLE ---
-		// We switch to HUNT if we see the Golem OR if we have very fresh stenches
-		// globally.
+	private long calculateMaxStenchTimestamp() {
 		Set<String> allStenches = this.myMap.getStenchNodes();
 		long maxTimestamp = -1;
 		for (String n : allStenches) {
@@ -200,10 +247,12 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			if (ts > maxTimestamp)
 				maxTimestamp = ts;
 		}
+		return maxTimestamp;
+	}
 
-		boolean isTrailHot = (maxTimestamp != -1 && (currentTimestamp - maxTimestamp) < 4000); // Trail freshness
-																								// threshold 4s
-		// [FIX-2] Ne pas maintenir le siege s'il n'y a aucune odeur
+	private void updateCurrentState(String visibleGolemNode, long currentTimestamp, long maxTimestamp) {
+		Set<String> allStenches = this.myMap.getStenchNodes();
+		boolean isTrailHot = (maxTimestamp != -1 && (currentTimestamp - maxTimestamp) < 4000);
 		boolean isSiegeActive = (this.myMap.getSiegeGolemPos() != null && !allStenches.isEmpty());
 
 		State previousState = this.currentState;
@@ -216,29 +265,18 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 		if (previousState != this.currentState) {
 			System.out.println(this.myAgent.getLocalName() + " -> Switching state to " + this.currentState.toString());
 		}
+	}
 
-		// --- 3. MOVEMENT DECISION ---
-		String targetNodeId = null;
-
-		if (this.currentState == State.HUNT) {
-			targetNodeId = computeHuntTarget(myPosition, lobs, obstacles, visibleGolemNode, visibleGolemName,
-					allStenches, currentTimestamp, maxTimestamp, allyVisible, claimedTargets, unattendedStenchesCount);
-		} else {
-			targetNodeId = computeExploreTarget(myPosition, lobs);
-		}
-
-		// --- 4. DEADLOCK DETECTION --- [FIX-4]
-		String myPosId = myPosition.getLocationId();
+	private void updateWaitTicks(String myPosId) {
 		if (myPosId.equals(this.lastPosition)) {
 			this.consecutiveWaitTicks++;
 		} else {
 			this.consecutiveWaitTicks = 0;
 		}
 		this.lastPosition = myPosId;
+	}
 
-		// Si bloque depuis 3+ ticks, forcer un mouvement aleatoire pour casser le
-		// deadlock
-		// MAIS PAS si l'agent tient volontairement sa position de siege
+	private String resolveDeadlockIfNeeded(String myPosId, String targetNodeId, List<Couple<Location, List<Couple<Observation, String>>>> lobs) {
 		boolean holdingSiegePosition = (this.currentState == State.HUNT
 				&& targetNodeId != null && targetNodeId.equals(myPosId));
 
@@ -246,7 +284,6 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			boolean yielded = false;
 			String blockerName = null;
 			if (targetNodeId != null && !targetNodeId.equals(myPosId)) {
-				// Trouver un allié physiquement sur targetNodeId ou chemin adjacent
 				for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
 					for (Couple<Observation, String> o : obs.getRight()) {
 						if (o.getLeft() == Observation.AGENTNAME
@@ -261,7 +298,6 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			}
 
 			if (blockerName != null && this.myAgent.getLocalName().compareTo(blockerName) > 0) {
-				// Priorité FAIBLE : Je dois m'écarter (pas de côté)
 				List<String> escapeNodes = new ArrayList<>();
 				for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
 					String nodeId = obs.getLeft().getLocationId();
@@ -275,11 +311,9 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 					yielded = true;
 				}
 			} else if (blockerName != null) {
-				// Priorité FORTE : Je maintiens ma cible
 				yielded = true;
 			}
 
-			// Fallback blocage fantôme
 			if (!yielded) {
 				List<String> escapeNodes = new ArrayList<>();
 				for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
@@ -295,8 +329,10 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			}
 			this.consecutiveWaitTicks = 0;
 		}
+		return targetNodeId;
+	}
 
-		// --- 5. EXECUTE MOVEMENT ---
+	private void executeMovement(String myPosId, String targetNodeId, int unattendedStenchesCount) {
 		if (targetNodeId != null) {
 			int distToTarget = 0;
 			if (!targetNodeId.equals(myPosId)) {
@@ -377,10 +413,31 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			java.util.Map<String, Couple<Integer, Couple<Integer, String>>> claimedTargets,
 			int unattendedStenchesCount) {
 
+		Couple<String, String> golemInfo = determineActualGolemLocation(visibleGolemNode, visibleGolemName, allStenches, maxTimestamp, myPosition);
+		String actualGolemPos = validateSiegeAndGetPos(golemInfo.getLeft(), myPosition, lobs, visibleGolemNode, currentTimestamp);
+		String actualGolemName = golemInfo.getRight();
+
+		HuntDecision decision;
+		if (actualGolemPos != null) {
+			decision = computeSiegeCoordination(actualGolemPos, actualGolemName, myPosition, obstacles, allStenches, allyVisible, visibleGolemNode, claimedTargets, unattendedStenchesCount);
+		} else {
+			decision = computeStenchChaseStrategy(myPosition, allStenches, obstacles, currentTimestamp, claimedTargets, unattendedStenchesCount);
+		}
+
+		String nextNodeId = resolveNextNodeId(myPosition, decision, visibleGolemNode, obstacles);
+		nextNodeId = applyHuntFallbacks(nextNodeId, myPosition, actualGolemPos, allStenches, obstacles, lobs);
+
+		return nextNodeId;
+	}
+
+	private static class HuntDecision {
 		String targetNodeId = null;
+		List<String> bestPath = null;
+	}
+
+	private Couple<String, String> determineActualGolemLocation(String visibleGolemNode, String visibleGolemName, Set<String> allStenches, long maxTimestamp, Location myPosition) {
 		String actualGolemPos = null;
 		String actualGolemName = null;
-		List<String> bestPath = null;
 
 		if (visibleGolemNode != null) {
 			actualGolemPos = visibleGolemNode;
@@ -407,323 +464,308 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 				}
 			}
 			Set<String> possibleLocs = this.myMap.getGolemPossibleLocations(freshestStenches);
-			// [FIX-1] Exclure notre propre position : le Golem ne peut pas etre sur nous
 			if (possibleLocs != null) {
 				possibleLocs.remove(myPosition.getLocationId());
 			}
 			if (possibleLocs != null && possibleLocs.size() == 1) {
 				actualGolemPos = possibleLocs.iterator().next();
 			} else if (!allStenches.isEmpty() && siegeGolemPos != null) {
-				// [FIX-2] Ne faire confiance au siege QUE si on a encore de l'odeur
 				actualGolemPos = siegeGolemPos;
 				actualGolemName = siegeGolemName;
 			}
 		}
+		return new Couple<>(actualGolemPos, actualGolemName);
+	}
 
-		if (actualGolemPos != null) {
-			List<String> neighborsGol = this.myMap.getNeighbors(actualGolemPos);
-			boolean inPosition = neighborsGol.contains(myPosition.getLocationId())
-					|| myPosition.getLocationId().equals(actualGolemPos);
+	private String validateSiegeAndGetPos(String actualGolemPos, Location myPosition, List<Couple<Location, List<Couple<Observation, String>>>> lobs, String visibleGolemNode, long currentTimestamp) {
+		if (actualGolemPos == null) return null;
 
-			boolean haveLocalStench = false;
-			for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
-				if (obs.getLeft().getLocationId().equals(myPosition.getLocationId())) {
-					for (Couple<Observation, String> o : obs.getRight()) {
-						if (o.getLeft() == Observation.STENCH) {
-							haveLocalStench = true;
-							break;
-						}
+		List<String> neighborsGol = this.myMap.getNeighbors(actualGolemPos);
+		boolean inPosition = neighborsGol.contains(myPosition.getLocationId())
+				|| myPosition.getLocationId().equals(actualGolemPos);
+
+		boolean haveLocalStench = false;
+		for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
+			if (obs.getLeft().getLocationId().equals(myPosition.getLocationId())) {
+				for (Couple<Observation, String> o : obs.getRight()) {
+					if (o.getLeft() == Observation.STENCH) {
+						haveLocalStench = true;
+						break;
 					}
 				}
 			}
-
-			// Invalider le siege si un agent est en position (sur le périmètre) et ne sent
-			// PAS d'odeur (et ne voit pas le golem)
-			if (inPosition && !haveLocalStench && visibleGolemNode == null && actualGolemPos.equals(siegeGolemPos)) {
-				this.myMap.updateSiegeStatus(null, null, null, null, null, currentTimestamp + 1);
-				actualGolemPos = null; // Invalide le siege !
-			}
 		}
 
-		if (actualGolemPos != null) {
-			List<String> neighbors = this.myMap.getNeighbors(actualGolemPos);
-			int A = (this.agentNames != null ? this.agentNames.size() : 0) + 1;
-			int D = neighbors.size();
+		String siegeGolemPos = this.myMap.getSiegeGolemPos();
+		if (inPosition && !haveLocalStench && visibleGolemNode == null && actualGolemPos.equals(siegeGolemPos)) {
+			this.myMap.updateSiegeStatus(null, null, null, null, null, currentTimestamp + 1);
+			return null;
+		}
+		return actualGolemPos;
+	}
 
-			// Si on est en position
-			boolean inPosition = neighbors.contains(myPosition.getLocationId())
-					|| myPosition.getLocationId().equals(actualGolemPos);
+	private HuntDecision computeSiegeCoordination(String actualGolemPos, String actualGolemName, Location myPosition, List<String> obstacles, Set<String> allStenches, boolean allyVisible, String visibleGolemNode, java.util.Map<String, Couple<Integer, Couple<Integer, String>>> claimedTargets, int unattendedStenchesCount) {
+		HuntDecision decision = new HuntDecision();
+		List<String> neighbors = this.myMap.getNeighbors(actualGolemPos);
+		int A = (this.agentNames != null ? this.agentNames.size() : 0) + 1;
+		int D = neighbors.size();
 
-			Set<String> holes = new HashSet<>(neighbors);
-			holes.removeAll(obstacles);
-			holes.remove(myPosition.getLocationId());
+		boolean inPosition = neighbors.contains(myPosition.getLocationId())
+				|| myPosition.getLocationId().equals(actualGolemPos);
 
-			// [FIX-5] Ne broadcaster le siege QUE si on a une preuve directe
-			boolean confirmedByEvidence = (actualGolemName != null || !allStenches.isEmpty());
+		Set<String> holes = new HashSet<>(neighbors);
+		holes.removeAll(obstacles);
+		holes.remove(myPosition.getLocationId());
 
-			if (inPosition && allyVisible && confirmedByEvidence) {
-				broadcastSiegeStatus(actualGolemPos, actualGolemName, String.join(",", holes));
-			}
+		boolean confirmedByEvidence = (actualGolemName != null || !allStenches.isEmpty());
 
-			// [FIX-3] Determiner si on a des allies pour le siege
-			boolean hasAllies = allyVisible || !this.myMap.getSiegeStaffLocations().isEmpty();
+		if (inPosition && allyVisible && confirmedByEvidence) {
+			broadcastSiegeStatus(actualGolemPos, actualGolemName, String.join(",", holes));
+		}
 
-			// On s'assure que la position actuelle est bien validée par la vue ou un siège
-			// actif
-			boolean isGolemConfirmed = (actualGolemPos.equals(visibleGolemNode)
-					|| actualGolemPos.equals(siegeGolemPos));
+		String siegeGolemPos = this.myMap.getSiegeGolemPos();
+		boolean isGolemConfirmed = (actualGolemPos.equals(visibleGolemNode)
+				|| actualGolemPos.equals(siegeGolemPos));
 
-			if (inPosition && !myPosition.getLocationId().equals(actualGolemPos) && isGolemConfirmed) {
-				// Là, on est sûr de tenir une vraie porte !
-				return myPosition.getLocationId();
-			} else {
-				String bestHole = null;
-				int minDist = Integer.MAX_VALUE;
+		if (inPosition && !myPosition.getLocationId().equals(actualGolemPos) && isGolemConfirmed) {
+			decision.targetNodeId = myPosition.getLocationId();
+			return decision;
+		}
 
-				List<String> sortedHoles = new ArrayList<>(holes);
-				if (A < D) {
-					sortedHoles.sort((h1, h2) -> Integer.compare(this.myMap.getNeighbors(h2).size(),
-							this.myMap.getNeighbors(h1).size()));
-				}
+		String bestHole = null;
+		int minDist = Integer.MAX_VALUE;
 
-				List<String> obstaclesPourContournement = new ArrayList<>(obstacles);
-				obstaclesPourContournement.add(actualGolemPos);
+		List<String> sortedHoles = new ArrayList<>(holes);
+		if (A < D) {
+			sortedHoles.sort((h1, h2) -> Integer.compare(this.myMap.getNeighbors(h2).size(),
+					this.myMap.getNeighbors(h1).size()));
+		}
 
-				// Mélanger légèrement pour éviter que 3 agents à égale distance
-				// choisissent systématiquement le même nœud dans la liste triée.
-				Collections.shuffle(sortedHoles);
+		List<String> obstaclesPourContournement = new ArrayList<>(obstacles);
+		obstaclesPourContournement.add(actualGolemPos);
 
-				for (String hole : sortedHoles) {
-					if (obstacles.contains(hole))
+		Collections.shuffle(sortedHoles);
+
+		for (String hole : sortedHoles) {
+			if (obstacles.contains(hole))
+				continue;
+
+			List<String> path = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), hole,
+					obstaclesPourContournement);
+
+			int myDist = (path != null) ? path.size() : Integer.MAX_VALUE;
+
+			if (claimedTargets.containsKey(hole) && myDist != Integer.MAX_VALUE) {
+				Couple<Integer, Couple<Integer, String>> claim = claimedTargets.get(hole);
+				int otherDist = claim.getLeft();
+				int otherCount = claim.getRight().getLeft();
+				String otherName = claim.getRight().getRight();
+
+				if (otherDist < myDist)
+					continue;
+				if (otherDist == myDist) {
+					if (otherCount < unattendedStenchesCount)
 						continue;
-
-					List<String> path = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), hole,
-							obstaclesPourContournement);
-
-					int myDist = (path != null) ? path.size() : Integer.MAX_VALUE;
-
-					if (claimedTargets.containsKey(hole) && myDist != Integer.MAX_VALUE) {
-						Couple<Integer, Couple<Integer, String>> claim = claimedTargets.get(hole);
-						int otherDist = claim.getLeft();
-						int otherCount = claim.getRight().getLeft();
-						String otherName = claim.getRight().getRight();
-
-						if (otherDist < myDist)
-							continue;
-						if (otherDist == myDist) {
-							if (otherCount < unattendedStenchesCount)
-								continue;
-							if (otherCount == unattendedStenchesCount && this.myAgent.getLocalName().compareTo(otherName) > 0)
-								continue;
-						}
-					}
-
-					if (myDist < minDist) {
-						minDist = myDist;
-						bestHole = hole;
-						bestPath = path;
-					}
-				}
-
-				if (bestHole != null)
-					targetNodeId = bestHole;
-				else
-					targetNodeId = actualGolemPos;
-			}
-
-		} else {
-			// Fallback Stench Chase : Gradient d'Odeur N2 -> N1
-			int minDist = Integer.MAX_VALUE;
-
-			String n1 = null;
-			long ts1 = -1;
-			String n2 = null;
-			long ts2 = -1;
-
-			for (String loc : allStenches) {
-				long ts = this.myMap.getStenchTimestamp(loc);
-				if (ts > ts1) {
-					ts2 = ts1;
-					n2 = n1;
-					ts1 = ts;
-					n1 = loc;
-				} else if (ts > ts2 && ts <= ts1 && !loc.equals(n1)) {
-					ts2 = ts;
-					n2 = loc;
+					if (otherCount == unattendedStenchesCount && this.myAgent.getLocalName().compareTo(otherName) > 0)
+						continue;
 				}
 			}
 
-			if (n1 != null) {
-				List<String> locNeighbors = this.myMap.getNeighbors(n1);
-
-				// Sécurisation du Gradient d'Odeur
-				boolean isTrajectoryValid = (n2 != null && locNeighbors.contains(n2));
-
-				// NOUVEAU : Suis-je le Rabatteur (Beater) ?
-				// Vérifier si un allié a déjà "claim" N1 ou une distance très courte vers N1
-				boolean amITheBeater = true;
-				if (claimedTargets.containsKey(n1)) {
-					Couple<Integer, Couple<Integer, String>> claim = claimedTargets.get(n1);
-					List<String> myPathToN1 = this.myMap.getShortestPath(myPosition.getLocationId(), n1);
-					int myDistToN1 = (myPathToN1 != null) ? myPathToN1.size() : Integer.MAX_VALUE;
-
-					int otherDist = claim.getLeft();
-					int otherCount = claim.getRight().getLeft();
-					String otherName = claim.getRight().getRight();
-
-					boolean otherHasPriority = (otherDist < myDistToN1);
-					if (otherDist == myDistToN1) {
-						if (otherCount < unattendedStenchesCount)
-							otherHasPriority = true;
-						else if (otherCount == unattendedStenchesCount && this.myAgent.getLocalName().compareTo(otherName) > 0)
-							otherHasPriority = true;
-					}
-
-					if (otherHasPriority) {
-						amITheBeater = false;
-					}
-				}
-
-				if (amITheBeater) {
-					// --- COMPORTEMENT RABATTEUR (Le code existant) ---
-					// Je suis le plus proche, je pousse le Golem dans le dos en ciblant le voisin
-					// direct de n1
-					for (String potentialNextStep : locNeighbors) {
-						// Exclure formellement N2 (il vient de là) et les odeurs connues (déjà
-						// visitées)
-						if ((isTrajectoryValid && potentialNextStep.equals(n2))
-								|| allStenches.contains(potentialNextStep))
-							continue;
-
-						List<String> path = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(),
-								potentialNextStep, obstacles);
-
-						int myDist = (path != null) ? path.size() : Integer.MAX_VALUE;
-
-						if (claimedTargets.containsKey(potentialNextStep) && myDist != Integer.MAX_VALUE) {
-							Couple<Integer, Couple<Integer, String>> claim = claimedTargets.get(potentialNextStep);
-							int otherDist = claim.getLeft();
-							int otherCount = claim.getRight().getLeft();
-							String otherName = claim.getRight().getRight();
-
-							if (otherDist < myDist)
-								continue;
-							if (otherDist == myDist) {
-								if (otherCount < unattendedStenchesCount)
-									continue;
-								if (otherCount == unattendedStenchesCount && this.myAgent.getLocalName().compareTo(otherName) > 0)
-									continue;
-							}
-						}
-
-						if (path != null && !path.isEmpty()) {
-							if (myDist < minDist) {
-								minDist = myDist;
-								targetNodeId = potentialNextStep;
-								bestPath = path;
-							}
-						} else if (potentialNextStep.equals(myPosition.getLocationId())) {
-							long ageOfStench = currentTimestamp - ts1;
-							if (ageOfStench < 1000) {
-								if (0 < minDist) {
-									minDist = 0;
-									targetNodeId = potentialNextStep;
-									bestPath = new ArrayList<>();
-								}
-							}
-						}
-					}
-				} else {
-					// --- COMPORTEMENT INTERCEPTEUR (L'anticipation dynamique) ---
-
-					// 1. Le Mur de Feu Assoupli :
-					// Sur un graphe dense, éviter TOUTES les odeurs bloque le pathfinding.
-					// On évite seulement la position immédiate du Golem (n1) et d'où il vient (n2).
-					List<String> avoidNodes = new ArrayList<>(obstacles);
-					avoidNodes.add(n1);
-					if (n2 != null)
-						avoidNodes.add(n2);
-
-					boolean interceptionFound = false;
-
-					// 2. Recherche d'un point d'interception faisable
-					for (int depth = 2; depth <= 5; depth++) {
-						String interceptionTarget = predictGolemInterceptionPoint(n1,
-								n2 != null ? n2 : myPosition.getLocationId(), depth);
-
-						if (interceptionTarget != null && !interceptionTarget.equals(myPosition.getLocationId())) {
-							List<String> path = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(),
-									interceptionTarget, avoidNodes);
-
-							if (path != null && !path.isEmpty()) {
-								// Test de Faisabilité : Arriverons-nous avant lui ?
-								if (path.size() <= depth + 1) {
-									targetNodeId = interceptionTarget;
-									bestPath = path;
-									interceptionFound = true;
-									break;
-								}
-							}
-						}
-					}
-
-					// 3. Fallback Stratégique (LA CORRECTION MAJEURE)
-					// 3. Fallback Stratégique (LA CORRECTION ANTI-EMBOUTEILLAGE)
-					if (!interceptionFound) {
-						// Impossible de faire une interception parfaite loin devant.
-						// Au lieu de tous foncer sur n1 et de s'embouteiller dans le même couloir,
-						// on va chercher à verrouiller le périmètre IMMEDIAT de n1 (le filet de pêche).
-
-						List<String> n1Neighbors = this.myMap.getNeighbors(n1);
-						List<String> availablePerimeter = new ArrayList<>();
-
-						for (String v : n1Neighbors) {
-							// On cherche une case adjacente au Golem qui n'est pas un obstacle,
-							// qui n'est pas sa provenance (n2), et SURTOUT qu'un collègue n'a pas déjà
-							// "claim"
-							if (!obstacles.contains(v) && !v.equals(n2)) {
-								if (!claimedTargets.containsKey(v)) {
-									availablePerimeter.add(v);
-								}
-							}
-						}
-
-						if (!availablePerimeter.isEmpty()) {
-							// On choisit la place sur le périmètre la plus rapide à atteindre pour moi
-							int minDistToPerim = Integer.MAX_VALUE;
-							for (String p : availablePerimeter) {
-								List<String> pPath = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), p,
-										obstacles);
-								if (pPath != null && pPath.size() < minDistToPerim) {
-									minDistToPerim = pPath.size();
-									targetNodeId = p;
-									bestPath = pPath;
-								}
-							}
-						}
-
-						// Si tout le filet est déjà pris ou physiquement inaccessible pour le moment,
-						// on se contente de se rapprocher de n1 globalement (soutien lointain)
-						if (targetNodeId == null) {
-							targetNodeId = n1;
-							bestPath = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), n1, obstacles);
-						}
-					}
-				}
-
-				// Si cul-de-sac parfait (n1 n'a que n2 comme voisin), on cible n1 par défaut
-				if (targetNodeId == null && !obstacles.contains(n1))
-					targetNodeId = n1;
+			if (myDist < minDist) {
+				minDist = myDist;
+				bestHole = hole;
+				decision.bestPath = path;
 			}
 		}
 
+		if (bestHole != null)
+			decision.targetNodeId = bestHole;
+		else
+			decision.targetNodeId = actualGolemPos;
+
+		return decision;
+	}
+
+	private HuntDecision computeStenchChaseStrategy(Location myPosition, Set<String> allStenches, List<String> obstacles, long currentTimestamp, java.util.Map<String, Couple<Integer, Couple<Integer, String>>> claimedTargets, int unattendedStenchesCount) {
+		HuntDecision decision = new HuntDecision();
+
+		String n1 = null;
+		long ts1 = -1;
+		String n2 = null;
+		long ts2 = -1;
+
+		for (String loc : allStenches) {
+			long ts = this.myMap.getStenchTimestamp(loc);
+			if (ts > ts1) {
+				ts2 = ts1;
+				n2 = n1;
+				ts1 = ts;
+				n1 = loc;
+			} else if (ts > ts2 && ts <= ts1 && !loc.equals(n1)) {
+				ts2 = ts;
+				n2 = loc;
+			}
+		}
+
+		if (n1 != null) {
+			List<String> locNeighbors = this.myMap.getNeighbors(n1);
+			boolean isTrajectoryValid = (n2 != null && locNeighbors.contains(n2));
+
+			boolean amITheBeater = true;
+			if (claimedTargets.containsKey(n1)) {
+				Couple<Integer, Couple<Integer, String>> claim = claimedTargets.get(n1);
+				List<String> myPathToN1 = this.myMap.getShortestPath(myPosition.getLocationId(), n1);
+				int myDistToN1 = (myPathToN1 != null) ? myPathToN1.size() : Integer.MAX_VALUE;
+
+				int otherDist = claim.getLeft();
+				int otherCount = claim.getRight().getLeft();
+				String otherName = claim.getRight().getRight();
+
+				boolean otherHasPriority = (otherDist < myDistToN1);
+				if (otherDist == myDistToN1) {
+					if (otherCount < unattendedStenchesCount)
+						otherHasPriority = true;
+					else if (otherCount == unattendedStenchesCount && this.myAgent.getLocalName().compareTo(otherName) > 0)
+						otherHasPriority = true;
+				}
+
+				if (otherHasPriority) {
+					amITheBeater = false;
+				}
+			}
+
+			if (amITheBeater) {
+				decision = computeBeaterStrategy(myPosition, n1, n2, isTrajectoryValid, allStenches, locNeighbors, obstacles, currentTimestamp, ts1, claimedTargets, unattendedStenchesCount);
+			} else {
+				decision = computeInterceptorStrategy(myPosition, n1, n2, obstacles, claimedTargets);
+			}
+
+			if (decision.targetNodeId == null && !obstacles.contains(n1))
+				decision.targetNodeId = n1;
+		}
+
+		return decision;
+	}
+
+	private HuntDecision computeBeaterStrategy(Location myPosition, String n1, String n2, boolean isTrajectoryValid, Set<String> allStenches, List<String> locNeighbors, List<String> obstacles, long currentTimestamp, long ts1, java.util.Map<String, Couple<Integer, Couple<Integer, String>>> claimedTargets, int unattendedStenchesCount) {
+		HuntDecision decision = new HuntDecision();
+		int minDist = Integer.MAX_VALUE;
+
+		for (String potentialNextStep : locNeighbors) {
+			if ((isTrajectoryValid && potentialNextStep.equals(n2))
+					|| allStenches.contains(potentialNextStep))
+				continue;
+
+			List<String> path = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(),
+					potentialNextStep, obstacles);
+
+			int myDist = (path != null) ? path.size() : Integer.MAX_VALUE;
+
+			if (claimedTargets.containsKey(potentialNextStep) && myDist != Integer.MAX_VALUE) {
+				Couple<Integer, Couple<Integer, String>> claim = claimedTargets.get(potentialNextStep);
+				int otherDist = claim.getLeft();
+				int otherCount = claim.getRight().getLeft();
+				String otherName = claim.getRight().getRight();
+
+				if (otherDist < myDist)
+					continue;
+				if (otherDist == myDist) {
+					if (otherCount < unattendedStenchesCount)
+						continue;
+					if (otherCount == unattendedStenchesCount && this.myAgent.getLocalName().compareTo(otherName) > 0)
+						continue;
+				}
+			}
+
+			if (path != null && !path.isEmpty()) {
+				if (myDist < minDist) {
+					minDist = myDist;
+					decision.targetNodeId = potentialNextStep;
+					decision.bestPath = path;
+				}
+			} else if (potentialNextStep.equals(myPosition.getLocationId())) {
+				long ageOfStench = currentTimestamp - ts1;
+				if (ageOfStench < 1000) {
+					if (0 < minDist) {
+						minDist = 0;
+						decision.targetNodeId = potentialNextStep;
+						decision.bestPath = new ArrayList<>();
+					}
+				}
+			}
+		}
+		return decision;
+	}
+
+	private HuntDecision computeInterceptorStrategy(Location myPosition, String n1, String n2, List<String> obstacles, java.util.Map<String, Couple<Integer, Couple<Integer, String>>> claimedTargets) {
+		HuntDecision decision = new HuntDecision();
+		List<String> avoidNodes = new ArrayList<>(obstacles);
+		avoidNodes.add(n1);
+		if (n2 != null)
+			avoidNodes.add(n2);
+
+		boolean interceptionFound = false;
+
+		for (int depth = 2; depth <= 5; depth++) {
+			String interceptionTarget = predictGolemInterceptionPoint(n1,
+					n2 != null ? n2 : myPosition.getLocationId(), depth);
+
+			if (interceptionTarget != null && !interceptionTarget.equals(myPosition.getLocationId())) {
+				List<String> path = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(),
+						interceptionTarget, avoidNodes);
+
+				if (path != null && !path.isEmpty()) {
+					if (path.size() <= depth + 1) {
+						decision.targetNodeId = interceptionTarget;
+						decision.bestPath = path;
+						interceptionFound = true;
+						break;
+					}
+				}
+			}
+		}
+
+		if (!interceptionFound) {
+			List<String> n1Neighbors = this.myMap.getNeighbors(n1);
+			List<String> availablePerimeter = new ArrayList<>();
+
+			for (String v : n1Neighbors) {
+				if (!obstacles.contains(v) && !v.equals(n2)) {
+					if (!claimedTargets.containsKey(v)) {
+						availablePerimeter.add(v);
+					}
+				}
+			}
+
+			if (!availablePerimeter.isEmpty()) {
+				int minDistToPerim = Integer.MAX_VALUE;
+				for (String p : availablePerimeter) {
+					List<String> pPath = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), p,
+							obstacles);
+					if (pPath != null && pPath.size() < minDistToPerim) {
+						minDistToPerim = pPath.size();
+						decision.targetNodeId = p;
+						decision.bestPath = pPath;
+					}
+				}
+			}
+
+			if (decision.targetNodeId == null) {
+				decision.targetNodeId = n1;
+				decision.bestPath = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), n1, obstacles);
+			}
+		}
+		return decision;
+	}
+
+	private String resolveNextNodeId(Location myPosition, HuntDecision decision, String visibleGolemNode, List<String> obstacles) {
 		String nextNodeId = null;
-		if (targetNodeId != null) {
-			if (targetNodeId.equals(myPosition.getLocationId())) {
+		if (decision.targetNodeId != null) {
+			if (decision.targetNodeId.equals(myPosition.getLocationId())) {
 				nextNodeId = myPosition.getLocationId();
 			} else {
-				List<String> path = (bestPath != null) ? bestPath
-						: this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), targetNodeId, obstacles);
+				List<String> path = (decision.bestPath != null) ? decision.bestPath
+						: this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), decision.targetNodeId, obstacles);
 				if (path != null && !path.isEmpty()) {
 					if (visibleGolemNode != null && path.get(0).equals(visibleGolemNode)) {
 						nextNodeId = myPosition.getLocationId();
@@ -733,8 +775,10 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 				}
 			}
 		}
+		return nextNodeId;
+	}
 
-		// --- Fallback: Explore open nodes closest to the Golem ---
+	private String applyHuntFallbacks(String nextNodeId, Location myPosition, String actualGolemPos, Set<String> allStenches, List<String> obstacles, List<Couple<Location, List<Couple<Observation, String>>>> lobs) {
 		if (nextNodeId == null) {
 			String golemPosToUse = actualGolemPos;
 			if (golemPosToUse == null && !allStenches.isEmpty()) {
@@ -766,7 +810,6 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			}
 		}
 
-		// --- Ultimate Fallback: Random Walk ---
 		if (nextNodeId == null) {
 			List<String> validPatrolNodes = new ArrayList<>();
 			for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {

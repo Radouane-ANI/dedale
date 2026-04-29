@@ -26,7 +26,7 @@ public class HuntBehaviour extends TickerBehaviour {
 	private int consecutiveWaitTicks = 0; // Compteur pour briser les interblocages
 
 	public HuntBehaviour(AbstractDedaleAgent myagent, MapRepresentation myMap, List<String> agentNames) {
-		super(myagent, 500);
+		super(myagent, 400);
 		this.myMap = myMap;
 		this.agentNames = agentNames;
 	}

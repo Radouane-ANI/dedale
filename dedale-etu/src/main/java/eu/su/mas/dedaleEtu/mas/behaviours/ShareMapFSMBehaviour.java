@@ -189,7 +189,8 @@ public class ShareMapFSMBehaviour extends FSMBehaviour {
             } else {
                 // Message found set exit code and transition
                 String protocol = currentMsg.getProtocol();
-                //System.out.println(myAgent.getLocalName() + " received " + protocol + " from " + currentMsg.getSender().getLocalName());
+                // System.out.println(myAgent.getLocalName() + " received " + protocol + " from
+                // " + currentMsg.getSender().getLocalName());
                 messageFound = true;
                 switch (protocol) {
                     case "MAP":
@@ -231,17 +232,17 @@ public class ShareMapFSMBehaviour extends FSMBehaviour {
         }
 
         private boolean agentProche() {
-                List<Couple<Location, List<Couple<Observation, String>>>> lobs = ((AbstractDedaleAgent) myAgent)
-                        .observe();
-                if (lobs == null)
-                    return false;
-                for (Couple<Location, List<Couple<Observation, String>>> points : lobs) {
-                    for (Couple<Observation, String> obs : points.getRight()) {
-                        if (obs.getLeft() == Observation.AGENTNAME) {
-                            return true;
-                        }
+            List<Couple<Location, List<Couple<Observation, String>>>> lobs = ((AbstractDedaleAgent) myAgent)
+                    .observe();
+            if (lobs == null)
+                return false;
+            for (Couple<Location, List<Couple<Observation, String>>> points : lobs) {
+                for (Couple<Observation, String> obs : points.getRight()) {
+                    if (obs.getLeft() == Observation.AGENTNAME) {
+                        return true;
                     }
                 }
+            }
             return false;
         }
     }

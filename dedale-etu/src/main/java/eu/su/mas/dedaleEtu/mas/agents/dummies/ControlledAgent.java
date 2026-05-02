@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
+import eu.su.mas.dedale.mas.agent.behaviours.platformManagment.GsControlBehaviour;
 import eu.su.mas.dedale.mas.agent.behaviours.platformManagment.StartMyBehaviours;
 import jade.core.behaviours.Behaviour;
 

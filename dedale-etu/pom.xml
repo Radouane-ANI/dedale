@@ -38,7 +38,7 @@
 		<javafx.version>21.0.2</javafx.version>
 		<gs-core.version>2.0</gs-core.version>
 		<jackson.version>2.14.3</jackson.version>
-		<dedale.version>2026.03</dedale.version>
+		<dedale.version>2026.04</dedale.version>
 		<tools.version>2026.02</tools.version>
 		<jade.version>2026.02</jade.version>
 	</properties>

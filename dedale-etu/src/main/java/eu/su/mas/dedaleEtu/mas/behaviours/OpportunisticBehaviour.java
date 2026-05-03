@@ -42,6 +42,7 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 	private boolean finishedExploration = false;
 	private int consecutiveWaitTicks = 0;
 	private String lastPosition = null; // [FIX-4] Pour detection de deadlock
+	private boolean suspectInvisibleGolem = false;
 
 	public OpportunisticBehaviour(final AbstractDedaleAgent myagent, MapRepresentation myMap,
 			ShareMapFSMBehaviour shareBehaviour, ReceiveGolemTrailBehaviour receiveTrailBehaviour,
@@ -77,15 +78,58 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 
 		// --- 2. THE BRAIN: DYNAMIC STATE TOGGLE ---
 		long maxTimestamp = calculateMaxStenchTimestamp();
+		
+		String adjacentStenchNode = null;
+		boolean haveLocalStench = false;
+		for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
+			String locId = obs.getLeft().getLocationId();
+			boolean hasStench = false;
+			for (Couple<Observation, String> o : obs.getRight()) {
+				if (o.getLeft() == Observation.STENCH) {
+					hasStench = true;
+					break;
+				}
+			}
+			if (hasStench) {
+				if (locId.equals(myPosition.getLocationId())) {
+					haveLocalStench = true;
+				} else if (!containsAlly(obs.getRight())) {
+					adjacentStenchNode = locId;
+				}
+			}
+		}
+
+		if ((haveLocalStench || adjacentStenchNode != null) && obsData.visibleGolemNode == null) {
+			this.suspectInvisibleGolem = true;
+		}
+		if (!haveLocalStench && adjacentStenchNode == null && obsData.visibleGolemNode == null) {
+			this.suspectInvisibleGolem = false;
+		}
+
 		updateCurrentState(obsData.visibleGolemNode, currentTimestamp, maxTimestamp);
 
 		// --- 3. MOVEMENT DECISION ---
 		String targetNodeId = null;
 		if (this.currentState == State.HUNT) {
-			Set<String> allStenches = this.myMap.getStenchNodes();
-			targetNodeId = computeHuntTarget(myPosition, lobs, obsData.obstacles, obsData.visibleGolemNode,
-					obsData.visibleGolemName, allStenches, currentTimestamp, maxTimestamp, obsData.allyVisible,
-					claimedTargets, unattendedStenchesCount);
+			if (this.suspectInvisibleGolem && obsData.visibleGolemNode == null) {
+				if (haveLocalStench) {
+					targetNodeId = myPosition.getLocationId();
+				} else if (adjacentStenchNode != null) {
+					targetNodeId = adjacentStenchNode;
+				}
+			}
+			
+			if (targetNodeId == null) {
+				Set<String> allStenches = this.myMap.getStenchNodes();
+				targetNodeId = computeHuntTarget(myPosition, lobs, obsData.obstacles, obsData.visibleGolemNode,
+						obsData.visibleGolemName, allStenches, currentTimestamp, maxTimestamp, obsData.allyVisible,
+						claimedTargets, unattendedStenchesCount);
+				
+				// Fallback to exploration if hunting provides no target (e.g. all stenches occupied)
+				if (targetNodeId == null) {
+					targetNodeId = computeExploreTarget(myPosition, lobs);
+				}
+			}
 		} else {
 			targetNodeId = computeExploreTarget(myPosition, lobs);
 		}
@@ -419,7 +463,7 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			int unattendedStenchesCount) {
 
 		Couple<String, String> golemInfo = determineActualGolemLocation(visibleGolemNode, visibleGolemName, allStenches,
-				maxTimestamp, myPosition);
+				maxTimestamp, myPosition, obstacles, claimedTargets);
 		String actualGolemPos = validateSiegeAndGetPos(golemInfo.getLeft(), myPosition, lobs, visibleGolemNode,
 				currentTimestamp);
 		String actualGolemName = golemInfo.getRight();
@@ -429,8 +473,13 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			decision = computeSiegeCoordination(actualGolemPos, actualGolemName, myPosition, obstacles, allStenches,
 					allyVisible, visibleGolemNode, claimedTargets, unattendedStenchesCount);
 		} else {
-			decision = computeStenchChaseStrategy(myPosition, allStenches, obstacles, currentTimestamp, claimedTargets,
-					unattendedStenchesCount, allyVisible);
+			if (unattendedStenchesCount > 0) {
+				decision = computeStenchChaseStrategy(myPosition, allStenches, obstacles, currentTimestamp, claimedTargets,
+						unattendedStenchesCount, allyVisible);
+			} else {
+				// All stenches are attended and no golem position deduced
+				return null; 
+			}
 		}
 
 		String nextNodeId = resolveNextNodeId(myPosition, decision, visibleGolemNode, obstacles);
@@ -445,7 +494,8 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 	}
 
 	private Couple<String, String> determineActualGolemLocation(String visibleGolemNode, String visibleGolemName,
-			Set<String> allStenches, long maxTimestamp, Location myPosition) {
+			Set<String> allStenches, long maxTimestamp, Location myPosition, List<String> obstacles,
+			java.util.Map<String, Couple<Integer, Couple<Integer, String>>> claimedTargets) {
 		String actualGolemPos = null;
 		String actualGolemName = null;
 
@@ -468,7 +518,7 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			Set<String> freshestStenches = new HashSet<>();
 			if (maxTimestamp != -1) {
 				for (String n : allStenches) {
-					if (this.myMap.getStenchTimestamp(n) >= maxTimestamp - 100) {
+					if (this.myMap.getStenchTimestamp(n) >= maxTimestamp - 1000) {
 						freshestStenches.add(n);
 					}
 				}
@@ -476,9 +526,35 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			Set<String> possibleLocs = this.myMap.getGolemPossibleLocations(freshestStenches);
 			if (possibleLocs != null) {
 				possibleLocs.remove(myPosition.getLocationId());
+				possibleLocs.removeAll(obstacles);
+				for (java.util.Map.Entry<String, Couple<Integer, Couple<Integer, String>>> entry : claimedTargets.entrySet()) {
+					if (entry.getValue().getLeft() == 0) {
+						possibleLocs.remove(entry.getKey());
+					}
+				}
 			}
-			if (possibleLocs != null && possibleLocs.size() == 1) {
-				actualGolemPos = possibleLocs.iterator().next();
+
+			if (possibleLocs != null && !possibleLocs.isEmpty()) {
+				List<String> sorted = new ArrayList<>(possibleLocs);
+				Collections.sort(sorted);
+				
+				HuntDecision decision = new HuntDecision();
+				// Try to find the first reachable possible location
+				for (String p : sorted) {
+					List<String> path = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), p, obstacles);
+					if (path != null && !path.isEmpty()) {
+						decision.targetNodeId = p;
+						decision.bestPath = path;
+						break;
+					}
+				}
+				
+				if (decision.targetNodeId != null) {
+					actualGolemPos = decision.targetNodeId;
+				} else if (siegeGolemPos != null) {
+					actualGolemPos = siegeGolemPos;
+					actualGolemName = siegeGolemName;
+				}
 			} else if (!allStenches.isEmpty() && siegeGolemPos != null) {
 				actualGolemPos = siegeGolemPos;
 				actualGolemName = siegeGolemName;

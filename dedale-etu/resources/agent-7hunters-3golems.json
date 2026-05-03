@@ -2,7 +2,7 @@
 { 
   "agentType":"agentExplo",
   "agentName": "Hunt1",
-  "agentClass":"dummies.explo.ExploreSoloAgent",
+  "agentClass":"dummies.explo.ExploreCoopAgent",
   "agentInitialContainer":"container2",
   "communicationRange": 2,
   "initialLocation": "70",
@@ -16,7 +16,7 @@
 { 
   "agentType":"agentExplo",
   "agentName": "Hunt2",
-  "agentClass":"dummies.explo.ExploreSoloAgent",
+  "agentClass":"dummies.explo.ExploreCoopAgent",
   "agentInitialContainer":"container2",
   "communicationRange": 2,
   "initialLocation": "71",
@@ -30,7 +30,7 @@
 { 
   "agentType":"agentExplo",
   "agentName": "Hunt3",
-  "agentClass":"dummies.explo.ExploreSoloAgent",
+  "agentClass":"dummies.explo.ExploreCoopAgent",
   "agentInitialContainer":"container2",
   "communicationRange": 2,
   "initialLocation": "76",
@@ -44,7 +44,7 @@
   { 
   "agentType":"agentExplo",
   "agentName": "Hunt4",
-  "agentClass":"dummies.explo.ExploreSoloAgent",
+  "agentClass":"dummies.explo.ExploreCoopAgent",
   "agentInitialContainer":"container2",
   "communicationRange": 1,
   "initialLocation": "j11",
@@ -58,7 +58,7 @@
   { 
   "agentType":"agentExplo",
   "agentName": "Hunt5",
-  "agentClass":"dummies.explo.ExploreSoloAgent",
+  "agentClass":"dummies.explo.ExploreCoopAgent",
   "agentInitialContainer":"container2",
   "communicationRange": 1,
   "initialLocation": "h40",
@@ -72,7 +72,7 @@
   { 
   "agentType":"agentExplo",
   "agentName": "Hunt6",
-  "agentClass":"dummies.explo.ExploreSoloAgent",
+  "agentClass":"dummies.explo.ExploreCoopAgent",
   "agentInitialContainer":"container2",
   "communicationRange": 3,
   "initialLocation": "M11",
@@ -86,7 +86,7 @@
   { 
   "agentType":"agentExplo",
   "agentName": "Hunt7",
-  "agentClass":"dummies.explo.ExploreSoloAgent",
+  "agentClass":"dummies.explo.ExploreCoopAgent",
   "agentInitialContainer":"container2",
   "communicationRange": 2,
   "initialLocation": "88",

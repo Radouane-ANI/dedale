@@ -11,7 +11,14 @@ import eu.su.mas.dedale.mas.agents.GateKeeperAgent;
 import eu.su.mas.dedaleEtu.mas.agents.dummies.explo.ExploreCoopAgent;
 import eu.su.mas.dedaleEtu.mas.agents.dummies.explo.ExploreSoloAgent;
 import jade.core.Profile;
-import jade.core.Profile;
+import eu.su.mas.dedaleEtu.mas.agents.dummies.DummyCollectorAgent;
+import eu.su.mas.dedaleEtu.mas.agents.dummies.DummyMovingAgent;
+import eu.su.mas.dedaleEtu.mas.agents.dummies.DummyTankerAgent;
+import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyWumpusShift;
+import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyWumpusShift2;
+import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.controlled.ControlledAgent;
+
+import dataStructures.*;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
 import jade.wrapper.AgentController;
@@ -596,7 +603,7 @@ public class Principal {
 		// Build a list of friendly agent names only (exclude Wumpus/Golem entities)
 		List<String> friendlyAgentNames = new ArrayList<String>();
 		for (EntityCharacteristics e : entities) {
-			if (e.getMyEntityType() != eu.su.mas.dedale.env.EntityType.WUMPUS) {
+			if (e.getMyEntityType() == eu.su.mas.dedale.env.EntityType.AGENT_EXPLORER) {
 				friendlyAgentNames.add(e.getAgentName());
 			}
 		}
@@ -629,6 +636,15 @@ public class Principal {
 		}
 	}
 
+
+	/**
+	 * Create user agents by loading the json entities file and add them to the platform.  
+	 * Agents are NOT started.
+	 * @param agentList
+	 * @param containerList
+	 *
+	 */
+	
 	/**
 	 * 
 	 * @param initialContainer    container where to deploy the agent
@@ -646,52 +662,8 @@ public class Principal {
 		}
 		return ag;
 	}
-
-	// private static Object[] merge(Object[] first, Object[] second) {
-	// 	Object[] combined = new Object[first.length + second.length];
-	// 	System.arraycopy(first, 0, combined, 0, first.length);
-	// 	System.arraycopy(second, 0, combined, first.length, second.length);
-	// 	return combined;
-	// }
-
-	// /**
-	//  * 
-	//  * @param initialContainer    container where to deploy the agent
-	//  * @param agentCaracteristics Mandatory parameters used to create the agent
-	//  *                            (first item is agentCarac object from file, second
-	//  *                            is gakeKeeper's name)
-	//  */
-	// private static AgentController createNewDedaleAgent(ContainerController initialContainer, String agentName,String className, Object[] additionnalParameters){
-	// 	String entitiesFilePath = ConfigurationFile.INSTANCE_CONFIGURATION_ENTITIES;
-	// 	List<eu.su.mas.dedale.env.EntityCharacteristics> entities = AbstractDedaleAgent.loadEntitiesCharacteristicsFromJson("", entitiesFilePath);
-	// 	eu.su.mas.dedale.env.EntityCharacteristics targetEc = null;
-		
-	// 	for(eu.su.mas.dedale.env.EntityCharacteristics ec : entities) {
-	// 		if(ec.getAgentName().equals(agentName)) {
-	// 			targetEc = ec;
-	// 			break;
-	// 		}
-	// 	}
-		
-	// 	if (targetEc == null) {
-	// 		System.err.println("Agent " + agentName + " not found in configuration file.");
-	// 		return null;
-	// 	}
-		
-	// 	Object[] objtab = new Object[]{targetEc, ConfigurationFile.DEFAULT_GATEKEEPER_NAME};
-	// 	Object[] agentCaracteristics = merge(objtab, additionnalParameters);
-
-	// 	// create the agent on the container given in parameter.
-	// 	AgentController ag = null;
-	// 	try {
-	// 		ag = initialContainer.createNewAgent(targetEc.getAgentName(), className, agentCaracteristics);
-	// 	} catch (StaleProxyException e) {
-	// 		e.printStackTrace();
-	// 	}
-	// 	Objects.requireNonNull(ag);
-	// 	System.out.println(targetEc.getAgentName() + " launched");
-	// 	return ag;
-	// }
+	
+	
 
 }
 

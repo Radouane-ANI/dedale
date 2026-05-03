@@ -46,7 +46,7 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 	public OpportunisticBehaviour(final AbstractDedaleAgent myagent, MapRepresentation myMap,
 			ShareMapFSMBehaviour shareBehaviour, ReceiveGolemTrailBehaviour receiveTrailBehaviour,
 			ReceiveSiegeStatusBehaviour receiveSiegeBehaviour, List<String> agentNames) {
-		super(myagent, 400); // 400ms ticks execution
+		super(myagent, 800); // 800ms ticks execution
 		this.myMap = myMap;
 		this.shareBehaviour = shareBehaviour;
 		this.receiveTrailBehaviour = receiveTrailBehaviour;
@@ -63,7 +63,8 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			return;
 
 		long currentTimestamp = System.currentTimeMillis();
-		java.util.Map<String, Couple<Integer, Couple<Integer, String>>> claimedTargets = receiveTargetClaims(currentTimestamp);
+		java.util.Map<String, Couple<Integer, Couple<Integer, String>>> claimedTargets = receiveTargetClaims(
+				currentTimestamp);
 
 		// --- 1. OBSERVATION & MAPPING (Unified) ---
 		List<Couple<Location, List<Couple<Observation, String>>>> lobs = ((AbstractDedaleAgent) this.myAgent).observe();
@@ -132,7 +133,8 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 		return claimedTargets;
 	}
 
-	private int countUnattendedStenches(List<Couple<Location, List<Couple<Observation, String>>>> lobs, Location myPosition) {
+	private int countUnattendedStenches(List<Couple<Location, List<Couple<Observation, String>>>> lobs,
+			Location myPosition) {
 		int unattendedStenchesCount = 0;
 		for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
 			boolean hasStench = false;
@@ -154,7 +156,8 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 		return unattendedStenchesCount;
 	}
 
-	private void updateMapAndClean(Location myPosition, List<Couple<Location, List<Couple<Observation, String>>>> lobs, long currentTimestamp) {
+	private void updateMapAndClean(Location myPosition, List<Couple<Location, List<Couple<Observation, String>>>> lobs,
+			long currentTimestamp) {
 		this.myMap.addNode(myPosition.getLocationId(), MapAttribute.closed);
 
 		for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
@@ -196,7 +199,8 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 		boolean allyVisible = false;
 	}
 
-	private ObservationData extractObservationData(Location myPosition, List<Couple<Location, List<Couple<Observation, String>>>> lobs) {
+	private ObservationData extractObservationData(Location myPosition,
+			List<Couple<Location, List<Couple<Observation, String>>>> lobs) {
 		ObservationData data = new ObservationData();
 
 		for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
@@ -276,7 +280,8 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 		this.lastPosition = myPosId;
 	}
 
-	private String resolveDeadlockIfNeeded(String myPosId, String targetNodeId, List<Couple<Location, List<Couple<Observation, String>>>> lobs) {
+	private String resolveDeadlockIfNeeded(String myPosId, String targetNodeId,
+			List<Couple<Location, List<Couple<Observation, String>>>> lobs) {
 		boolean holdingSiegePosition = (this.currentState == State.HUNT
 				&& targetNodeId != null && targetNodeId.equals(myPosId));
 
@@ -413,15 +418,19 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			java.util.Map<String, Couple<Integer, Couple<Integer, String>>> claimedTargets,
 			int unattendedStenchesCount) {
 
-		Couple<String, String> golemInfo = determineActualGolemLocation(visibleGolemNode, visibleGolemName, allStenches, maxTimestamp, myPosition);
-		String actualGolemPos = validateSiegeAndGetPos(golemInfo.getLeft(), myPosition, lobs, visibleGolemNode, currentTimestamp);
+		Couple<String, String> golemInfo = determineActualGolemLocation(visibleGolemNode, visibleGolemName, allStenches,
+				maxTimestamp, myPosition);
+		String actualGolemPos = validateSiegeAndGetPos(golemInfo.getLeft(), myPosition, lobs, visibleGolemNode,
+				currentTimestamp);
 		String actualGolemName = golemInfo.getRight();
 
 		HuntDecision decision;
 		if (actualGolemPos != null) {
-			decision = computeSiegeCoordination(actualGolemPos, actualGolemName, myPosition, obstacles, allStenches, allyVisible, visibleGolemNode, claimedTargets, unattendedStenchesCount);
+			decision = computeSiegeCoordination(actualGolemPos, actualGolemName, myPosition, obstacles, allStenches,
+					allyVisible, visibleGolemNode, claimedTargets, unattendedStenchesCount);
 		} else {
-			decision = computeStenchChaseStrategy(myPosition, allStenches, obstacles, currentTimestamp, claimedTargets, unattendedStenchesCount);
+			decision = computeStenchChaseStrategy(myPosition, allStenches, obstacles, currentTimestamp, claimedTargets,
+					unattendedStenchesCount, allyVisible);
 		}
 
 		String nextNodeId = resolveNextNodeId(myPosition, decision, visibleGolemNode, obstacles);
@@ -435,7 +444,8 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 		List<String> bestPath = null;
 	}
 
-	private Couple<String, String> determineActualGolemLocation(String visibleGolemNode, String visibleGolemName, Set<String> allStenches, long maxTimestamp, Location myPosition) {
+	private Couple<String, String> determineActualGolemLocation(String visibleGolemNode, String visibleGolemName,
+			Set<String> allStenches, long maxTimestamp, Location myPosition) {
 		String actualGolemPos = null;
 		String actualGolemName = null;
 
@@ -477,8 +487,11 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 		return new Couple<>(actualGolemPos, actualGolemName);
 	}
 
-	private String validateSiegeAndGetPos(String actualGolemPos, Location myPosition, List<Couple<Location, List<Couple<Observation, String>>>> lobs, String visibleGolemNode, long currentTimestamp) {
-		if (actualGolemPos == null) return null;
+	private String validateSiegeAndGetPos(String actualGolemPos, Location myPosition,
+			List<Couple<Location, List<Couple<Observation, String>>>> lobs, String visibleGolemNode,
+			long currentTimestamp) {
+		if (actualGolemPos == null)
+			return null;
 
 		List<String> neighborsGol = this.myMap.getNeighbors(actualGolemPos);
 		boolean inPosition = neighborsGol.contains(myPosition.getLocationId())
@@ -504,7 +517,10 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 		return actualGolemPos;
 	}
 
-	private HuntDecision computeSiegeCoordination(String actualGolemPos, String actualGolemName, Location myPosition, List<String> obstacles, Set<String> allStenches, boolean allyVisible, String visibleGolemNode, java.util.Map<String, Couple<Integer, Couple<Integer, String>>> claimedTargets, int unattendedStenchesCount) {
+	private HuntDecision computeSiegeCoordination(String actualGolemPos, String actualGolemName, Location myPosition,
+			List<String> obstacles, Set<String> allStenches, boolean allyVisible, String visibleGolemNode,
+			java.util.Map<String, Couple<Integer, Couple<Integer, String>>> claimedTargets,
+			int unattendedStenchesCount) {
 		HuntDecision decision = new HuntDecision();
 		List<String> neighbors = this.myMap.getNeighbors(actualGolemPos);
 		int A = (this.agentNames != null ? this.agentNames.size() : 0) + 1;
@@ -586,7 +602,10 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 		return decision;
 	}
 
-	private HuntDecision computeStenchChaseStrategy(Location myPosition, Set<String> allStenches, List<String> obstacles, long currentTimestamp, java.util.Map<String, Couple<Integer, Couple<Integer, String>>> claimedTargets, int unattendedStenchesCount) {
+	private HuntDecision computeStenchChaseStrategy(Location myPosition, Set<String> allStenches,
+			List<String> obstacles, long currentTimestamp,
+			java.util.Map<String, Couple<Integer, Couple<Integer, String>>> claimedTargets,
+			int unattendedStenchesCount, boolean allyVisible) {
 		HuntDecision decision = new HuntDecision();
 
 		String n1 = null;
@@ -625,7 +644,8 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 				if (otherDist == myDistToN1) {
 					if (otherCount < unattendedStenchesCount)
 						otherHasPriority = true;
-					else if (otherCount == unattendedStenchesCount && this.myAgent.getLocalName().compareTo(otherName) > 0)
+					else if (otherCount == unattendedStenchesCount
+							&& this.myAgent.getLocalName().compareTo(otherName) > 0)
 						otherHasPriority = true;
 				}
 
@@ -635,7 +655,13 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			}
 
 			if (amITheBeater) {
-				decision = computeBeaterStrategy(myPosition, n1, n2, isTrajectoryValid, allStenches, locNeighbors, obstacles, currentTimestamp, ts1, claimedTargets, unattendedStenchesCount);
+				if (!allyVisible) {
+					decision.targetNodeId = n1;
+					decision.bestPath = this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), n1, obstacles);
+				} else {
+					decision = computeBeaterStrategy(myPosition, n1, n2, isTrajectoryValid, allStenches, locNeighbors,
+							obstacles, currentTimestamp, ts1, claimedTargets, unattendedStenchesCount);
+				}
 			} else {
 				decision = computeInterceptorStrategy(myPosition, n1, n2, obstacles, claimedTargets);
 			}
@@ -647,7 +673,10 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 		return decision;
 	}
 
-	private HuntDecision computeBeaterStrategy(Location myPosition, String n1, String n2, boolean isTrajectoryValid, Set<String> allStenches, List<String> locNeighbors, List<String> obstacles, long currentTimestamp, long ts1, java.util.Map<String, Couple<Integer, Couple<Integer, String>>> claimedTargets, int unattendedStenchesCount) {
+	private HuntDecision computeBeaterStrategy(Location myPosition, String n1, String n2, boolean isTrajectoryValid,
+			Set<String> allStenches, List<String> locNeighbors, List<String> obstacles, long currentTimestamp, long ts1,
+			java.util.Map<String, Couple<Integer, Couple<Integer, String>>> claimedTargets,
+			int unattendedStenchesCount) {
 		HuntDecision decision = new HuntDecision();
 		int minDist = Integer.MAX_VALUE;
 
@@ -697,7 +726,8 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 		return decision;
 	}
 
-	private HuntDecision computeInterceptorStrategy(Location myPosition, String n1, String n2, List<String> obstacles, java.util.Map<String, Couple<Integer, Couple<Integer, String>>> claimedTargets) {
+	private HuntDecision computeInterceptorStrategy(Location myPosition, String n1, String n2, List<String> obstacles,
+			java.util.Map<String, Couple<Integer, Couple<Integer, String>>> claimedTargets) {
 		HuntDecision decision = new HuntDecision();
 		List<String> avoidNodes = new ArrayList<>(obstacles);
 		avoidNodes.add(n1);
@@ -758,14 +788,16 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 		return decision;
 	}
 
-	private String resolveNextNodeId(Location myPosition, HuntDecision decision, String visibleGolemNode, List<String> obstacles) {
+	private String resolveNextNodeId(Location myPosition, HuntDecision decision, String visibleGolemNode,
+			List<String> obstacles) {
 		String nextNodeId = null;
 		if (decision.targetNodeId != null) {
 			if (decision.targetNodeId.equals(myPosition.getLocationId())) {
 				nextNodeId = myPosition.getLocationId();
 			} else {
 				List<String> path = (decision.bestPath != null) ? decision.bestPath
-						: this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), decision.targetNodeId, obstacles);
+						: this.myMap.getShortestPathAvoiding(myPosition.getLocationId(), decision.targetNodeId,
+								obstacles);
 				if (path != null && !path.isEmpty()) {
 					if (visibleGolemNode != null && path.get(0).equals(visibleGolemNode)) {
 						nextNodeId = myPosition.getLocationId();
@@ -778,7 +810,9 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 		return nextNodeId;
 	}
 
-	private String applyHuntFallbacks(String nextNodeId, Location myPosition, String actualGolemPos, Set<String> allStenches, List<String> obstacles, List<Couple<Location, List<Couple<Observation, String>>>> lobs) {
+	private String applyHuntFallbacks(String nextNodeId, Location myPosition, String actualGolemPos,
+			Set<String> allStenches, List<String> obstacles,
+			List<Couple<Location, List<Couple<Observation, String>>>> lobs) {
 		if (nextNodeId == null) {
 			String golemPosToUse = actualGolemPos;
 			if (golemPosToUse == null && !allStenches.isEmpty()) {

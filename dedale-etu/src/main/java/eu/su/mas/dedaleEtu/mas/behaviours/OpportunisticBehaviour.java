@@ -43,16 +43,18 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 	private int consecutiveWaitTicks = 0;
 	private String lastPosition = null; // [FIX-4] Pour detection de deadlock
 	private boolean suspectInvisibleGolem = false;
+	private boolean isInvisibleHuntEnabled = false;
 
 	public OpportunisticBehaviour(final AbstractDedaleAgent myagent, MapRepresentation myMap,
 			ShareMapFSMBehaviour shareBehaviour, ReceiveGolemTrailBehaviour receiveTrailBehaviour,
-			ReceiveSiegeStatusBehaviour receiveSiegeBehaviour, List<String> agentNames) {
+			ReceiveSiegeStatusBehaviour receiveSiegeBehaviour, List<String> agentNames, boolean isInvisibleHuntEnabled) {
 		super(myagent, 800); // 800ms ticks execution
 		this.myMap = myMap;
 		this.shareBehaviour = shareBehaviour;
 		this.receiveTrailBehaviour = receiveTrailBehaviour;
 		this.receiveSiegeBehaviour = receiveSiegeBehaviour;
 		this.agentNames = agentNames;
+		this.isInvisibleHuntEnabled = isInvisibleHuntEnabled;
 	}
 
 	@Override
@@ -81,29 +83,33 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 		
 		String adjacentStenchNode = null;
 		boolean haveLocalStench = false;
-		for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
-			String locId = obs.getLeft().getLocationId();
-			boolean hasStench = false;
-			for (Couple<Observation, String> o : obs.getRight()) {
-				if (o.getLeft() == Observation.STENCH) {
-					hasStench = true;
-					break;
+		
+		// Only perform suspicion/invisible logic if enabled
+		if (this.isInvisibleHuntEnabled) {
+			for (Couple<Location, List<Couple<Observation, String>>> obs : lobs) {
+				String locId = obs.getLeft().getLocationId();
+				boolean hasStench = false;
+				for (Couple<Observation, String> o : obs.getRight()) {
+					if (o.getLeft() == Observation.STENCH) {
+						hasStench = true;
+						break;
+					}
+				}
+				if (hasStench) {
+					if (locId.equals(myPosition.getLocationId())) {
+						haveLocalStench = true;
+					} else if (!containsAlly(obs.getRight())) {
+						adjacentStenchNode = locId;
+					}
 				}
 			}
-			if (hasStench) {
-				if (locId.equals(myPosition.getLocationId())) {
-					haveLocalStench = true;
-				} else if (!containsAlly(obs.getRight())) {
-					adjacentStenchNode = locId;
-				}
-			}
-		}
 
-		if ((haveLocalStench || adjacentStenchNode != null) && obsData.visibleGolemNode == null) {
-			this.suspectInvisibleGolem = true;
-		}
-		if (!haveLocalStench && adjacentStenchNode == null && obsData.visibleGolemNode == null) {
-			this.suspectInvisibleGolem = false;
+			if ((haveLocalStench || adjacentStenchNode != null) && obsData.visibleGolemNode == null) {
+				this.suspectInvisibleGolem = true;
+			}
+			if (!haveLocalStench && adjacentStenchNode == null && obsData.visibleGolemNode == null) {
+				this.suspectInvisibleGolem = false;
+			}
 		}
 
 		updateCurrentState(obsData.visibleGolemNode, currentTimestamp, maxTimestamp);
@@ -111,7 +117,7 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 		// --- 3. MOVEMENT DECISION ---
 		String targetNodeId = null;
 		if (this.currentState == State.HUNT) {
-			if (this.suspectInvisibleGolem && obsData.visibleGolemNode == null) {
+			if (this.isInvisibleHuntEnabled && this.suspectInvisibleGolem && obsData.visibleGolemNode == null) {
 				if (haveLocalStench) {
 					targetNodeId = myPosition.getLocationId();
 				} else if (adjacentStenchNode != null) {
@@ -167,7 +173,7 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 					int dist = Integer.parseInt(data[2]);
 					int count = Integer.parseInt(data[3]);
 					String sender = claimMsg.getSender().getLocalName();
-					if (currentTimestamp - ts < 1000) {
+					if (currentTimestamp - ts < 1600) {
 						claimedTargets.put(data[0], new Couple<>(dist, new Couple<>(count, sender)));
 					}
 				} catch (Exception e) {
@@ -518,7 +524,8 @@ public class OpportunisticBehaviour extends TickerBehaviour {
 			Set<String> freshestStenches = new HashSet<>();
 			if (maxTimestamp != -1) {
 				for (String n : allStenches) {
-					if (this.myMap.getStenchTimestamp(n) >= maxTimestamp - 1000) {
+					// Use 1000ms window for better multi-agent sync
+					if (this.myMap.getStenchTimestamp(n) >= maxTimestamp - 1600) {
 						freshestStenches.add(n);
 					}
 				}

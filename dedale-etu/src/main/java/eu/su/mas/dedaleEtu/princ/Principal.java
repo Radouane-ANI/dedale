@@ -602,9 +602,13 @@ public class Principal {
 
 		// Build a list of friendly agent names only (exclude Wumpus/Golem entities)
 		List<String> friendlyAgentNames = new ArrayList<String>();
+		boolean hasHumanGolem = false;
 		for (EntityCharacteristics e : entities) {
 			if (e.getMyEntityType() == eu.su.mas.dedale.env.EntityType.AGENT_EXPLORER) {
 				friendlyAgentNames.add(e.getAgentName());
+			}
+			if (e.getMyEntityType() == eu.su.mas.dedale.env.EntityType.HUMAN) {
+				hasHumanGolem = true;
 			}
 		}
 
@@ -620,6 +624,7 @@ public class Principal {
 					params.add(name);
 				}
 			}
+			params.add(hasHumanGolem);
 
 			Object[] agentCaracsAndGK = params.toArray();
 			// Object[] userParameters= {};

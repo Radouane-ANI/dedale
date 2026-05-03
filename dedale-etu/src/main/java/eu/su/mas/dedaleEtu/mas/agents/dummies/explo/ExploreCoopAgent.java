@@ -55,20 +55,22 @@ public class ExploreCoopAgent extends AbstractDedaleAgent {
 		// get the parameters added to the agent at creation (if any)
 		final Object[] args = getArguments();
 
+		
 		List<String> list_agentNames = new ArrayList<String>();
-
+		boolean hasHumanGolem = false;
 		if (args.length == 0) {
 			System.err.println("Error while creating the agent, names of agent to contact expected");
 			System.exit(-1);
 		} else {
-			int i = 2;// WARNING YOU SHOULD ALWAYS START AT 2. This will be corrected in the next
-						// release.
-			while (i < args.length) {
+			int i = 2;
+			// The last argument is now the hasHumanGolem flag
+			while (i < args.length - 1) {
 				list_agentNames.add((String) args[i]);
 				i++;
 			}
+			hasHumanGolem = (Boolean) args[args.length - 1];
 		}
-		System.out.println(this.getLocalName() + " - args.length=" + args.length + ", receivers=" + list_agentNames);
+		System.out.println(this.getLocalName() + " - hasHumanGolem=" + hasHumanGolem + ", receivers=" + list_agentNames);
 
 		List<Behaviour> lb = new ArrayList<Behaviour>();
 
@@ -87,7 +89,7 @@ public class ExploreCoopAgent extends AbstractDedaleAgent {
 		ReceiveSiegeStatusBehaviour receiveSiegeBehaviour = new ReceiveSiegeStatusBehaviour(this, this.myMap);
 		lb.add(receiveSiegeBehaviour);
 
-		lb.add(new OpportunisticBehaviour(this, this.myMap, shareBehaviour, receiveTrailBehaviour, receiveSiegeBehaviour, list_agentNames));
+		lb.add(new OpportunisticBehaviour(this, this.myMap, shareBehaviour, receiveTrailBehaviour, receiveSiegeBehaviour, list_agentNames, hasHumanGolem));
 
 		addBehaviour(new StartMyBehaviours(this, lb));
 
